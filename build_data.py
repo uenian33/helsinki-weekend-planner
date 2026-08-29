@@ -10,7 +10,7 @@ import datetime as dt, html, json, os, re, sys, time, urllib.parse, urllib.reque
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
-from curated import CURATED, DAY, NOTES_FI, NOTES_ZH, LINKS
+from curated import CURATED, DAY, NOTES_FI, NOTES_ZH, LINKS, PHOTOS
 
 TZ = dt.timezone(dt.timedelta(hours=3))            # Helsinki, August
 DAY0 = dt.datetime(2026, 8, 29, 0, 0, tzinfo=TZ)
@@ -391,8 +391,15 @@ def main():
                 r['img'], r['vp'] = url, 1
                 vfilled += 1
                 break
+    # A photograph named for one specific event wins over the venue fallback,
+    # and carries its credit with it.
+    for r in out:
+        hit = PHOTOS.get(r['te'])
+        if hit:
+            r['img'], r['cr'], r['vp'] = hit[0], hit[1], 0
     for r in out:
         r.setdefault('vp', 0)
+        r.setdefault('cr', '')
     print(f'photographs: {sum(1 for o in out if o["img"])} of {len(out)}'
           f' ({filled} matched to an API entry, {vfilled} venue photographs)')
 

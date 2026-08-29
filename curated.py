@@ -172,8 +172,20 @@ NOTES_ZH = {
 }
 
 # Where each hand-listed event actually lives on the web, keyed by English title.
+# Photographs for events no API carries one for. Instagram is out -- its image
+# URLs are signed and expire, and it serves nothing to a logged-out fetch -- so
+# these come from Wikimedia Commons, which is freely licensed and stable. The
+# credit is shown on the picture, which is what the licence asks for.
+PHOTOS = {
+    'Sompasauna': (
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/'
+        'Sompasauna._%2853959712332%29.jpg/1280px-Sompasauna._%2853959712332%29.jpg',
+        'theowoo · CC BY-SA 2.0'),
+}
+
 # Anything not here gets no "official listing" button rather than a dead one.
 LINKS = {
+    'Sompasauna':'https://www.instagram.com/sompasauna/',
  'Latin Fest Helsinki':'https://konepajanbiergarten.fi/',
  'Metsäsydän – Ode to Local Forests':'https://www.kanneltalo.fi/',
  'Improa! Improvised opera':'https://www.laplandhotels.com/FI/etela-suomi/helsinki/lapland-hotels-bulevardi.html',
