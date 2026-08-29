@@ -25,6 +25,9 @@ in time*.
 - **My plan.** Add stops, set an arrival time for each, and the planner works out
   the walk between them — distinguishing a fixed performance, which ends when it
   ends, from an open-all-day venue, which is elastic. Four ready-made routes.
+- **Where you are.** The locate button puts you on the map and writes the
+  distance to every event onto its row — 460 m reads differently from 2.8 km at
+  half past three. Permission is asked for on the tap, never on load.
 - **Search** across name, venue, street and description, in any language.
 - **Flags that matter on the day**: free entry, today only, outdoors with the
   hour's rain probability, sold out, which sitting of a repeated show this is,

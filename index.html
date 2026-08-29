@@ -165,8 +165,17 @@ img{display:block;max-width:100%}
 .circle-btn svg{width:20px;height:20px}
 
 /* ---- base-map switch, second row, left side, clear of everything ---- */
-.seg{position:absolute;z-index:500;left:12px;top:calc(62px + env(safe-area-inset-top));
-  display:flex;padding:3px;border-radius:var(--corner-full);
+.mapchrome{position:absolute;z-index:500;left:12px;top:calc(62px + env(safe-area-inset-top));
+  display:flex;align-items:center;gap:8px}
+.locate{width:36px;height:36px;flex:0 0 36px}
+.locate svg{width:18px;height:18px}
+.locate[aria-pressed="true"]{background:var(--primary-container);color:var(--on-primary-container)}
+.locate[data-busy="1"] svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* the blue dot everyone already knows */
+.mypos{border-radius:50%;background:var(--primary);
+  box-shadow:0 0 0 3px var(--surface),0 1px 6px rgba(0,0,0,.35)}
+.seg{position:relative;display:flex;padding:3px;border-radius:var(--corner-full);
   background:var(--glass);backdrop-filter:blur(12px);box-shadow:var(--elev-1)}
 .seg button{border:0;background:none;cursor:pointer;height:30px;padding:0 12px;
   border-radius:var(--corner-full);color:var(--on-surface-variant);
@@ -289,8 +298,8 @@ img{display:block;max-width:100%}
 /* collapsed: the card shrinks to a pill that still scrubs, and gives the list its space back */
 .timeline[data-collapsed="1"] .tl-inner{width:auto;border-radius:var(--corner-full);
   padding:2px 5px 2px 13px}
-/* expanded, the card takes the whole row, so the switch it grew next to steps aside */
-.mapwrap.tl-open .seg{opacity:0;pointer-events:none;transition:opacity var(--dur-short3)}
+/* expanded, the card takes the whole row, so what it grew next to steps aside */
+.mapwrap.tl-open .mapchrome{opacity:0;pointer-events:none;transition:opacity var(--dur-short3)}
 .timeline[data-collapsed="1"] .tl-sub,
 .timeline[data-collapsed="1"] .tl-track,
 .timeline[data-collapsed="1"] .tl-ticks{display:none}
@@ -645,6 +654,7 @@ img{display:block;max-width:100%}
   <symbol id="i-prev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></symbol>
   <symbol id="i-lang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h8M8 3.5v2M9.6 5.5c-.6 3.6-2.6 6.4-5.6 8M6.4 9.4c1.2 2 3 3.4 5.1 4.2M12.2 20.5l3.6-9 3.6 9M13.6 17.6h4.4"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="8.5"/><path d="M12 1.6v2.6M12 19.8v2.6M22.4 12h-2.6M4.2 12H1.6"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
   <symbol id="i-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3"/><path d="M18 3.2v3.9h-3.9"/></symbol>
@@ -693,9 +703,12 @@ img{display:block;max-width:100%}
       <button class="circle-btn" id="langBtn" aria-label="Language">EN</button>
     </div>
 
+    <div class="mapchrome">
     <div class="seg" role="group" aria-label="Base map">
       <button id="segMap" aria-pressed="true"><svg><use href="#i-map"/></svg><span id="segMapLbl">Map</span></button>
       <button id="segSat" aria-pressed="false"><svg><use href="#i-sat"/></svg><span id="segSatLbl">Satellite</span></button>
+    </div>
+    <button class="circle-btn locate" id="locBtn" aria-pressed="false"><svg><use href="#i-locate"/></svg></button>
     </div>
 
     <div class="timeline" id="timeline" data-collapsed="0">
@@ -792,7 +805,8 @@ en:{code:'EN',name:'English',
  special:'Today only', specialQ:'What today has that tomorrow does not',
  brandNote:'An unofficial planner. Programme from Linked Events and Helsinki Festival; ranks and notes are editorial.',
  search:'Search', searchPh:'Event, venue or street', results:'{n} results for “{q}”', typeToSearch:'Search everything on today by name, venue, street or description.',
- venuePhoto:'Photograph of the venue', exhibition:'Exhibition', exhibitionSub:'A run of several days. The hours shown are the shape of a gallery Saturday, not a promise — check before a long trip.', noResults:'Nothing found',
+ venuePhoto:'Photograph of the venue',
+ locate:'Show where I am', locating:'Finding you…', locDenied:'Location was refused. Allow it in the browser to see yourself on the map.', locFailed:'Could not get a location.', away:'{d} away', fromYou:'from you', exhibition:'Exhibition', exhibitionSub:'A run of several days. The hours shown are the shape of a gallery Saturday, not a promise — check before a long trip.', noResults:'Nothing found',
  dark:'Dark', light:'Light', alsoCalled:'Also listed as'},
 
 fi:{code:'FI',name:'Suomi',
@@ -848,7 +862,8 @@ fi:{code:'FI',name:'Suomi',
  special:'Vain tänään', specialQ:'Mitä tänään on jota huomenna ei',
  brandNote:'Epävirallinen suunnittelija. Ohjelma Linked Eventsistä ja Helsingin juhlaviikoilta; tasot ja huomiot ovat toimituksellisia.',
  search:'Haku', searchPh:'Tapahtuma, paikka tai katu', results:'{n} osumaa haulle ”{q}”', typeToSearch:'Hae koko päivän ohjelmasta nimellä, paikalla, kadulla tai kuvauksella.',
- venuePhoto:'Kuva paikasta', exhibition:'Näyttely', exhibitionSub:'Kestää useita päiviä. Näytetyt kellonajat ovat galleria-lauantain muoto, eivät lupaus — tarkista ennen pitkää matkaa.', noResults:'Ei osumia',
+ venuePhoto:'Kuva paikasta',
+ locate:'Näytä missä olen', locating:'Etsitään sinua…', locDenied:'Sijainti evättiin. Salli se selaimessa nähdäksesi itsesi kartalla.', locFailed:'Sijaintia ei saatu.', away:'{d} päässä', fromYou:'sinusta', exhibition:'Näyttely', exhibitionSub:'Kestää useita päiviä. Näytetyt kellonajat ovat galleria-lauantain muoto, eivät lupaus — tarkista ennen pitkää matkaa.', noResults:'Ei osumia',
  dark:'Tumma', light:'Vaalea', alsoCalled:'Ohjelmassa myös nimellä'},
 
 zh:{code:'中',name:'中文',
@@ -904,7 +919,8 @@ zh:{code:'中',name:'中文',
  special:'仅限今天', specialQ:'今天有而明天没有的',
  brandNote:'非官方规划工具。节目数据来自 Linked Events 与赫尔辛基艺术节；等级和点评是编辑观点。',
  search:'搜索', searchPh:'活动、场地或街道', results:'「{q}」找到 {n} 个结果', typeToSearch:'按名称、场地、街道或介绍搜索今天的全部节目。',
- venuePhoto:'场地照片', exhibition:'长期展览', exhibitionSub:'展期跨好几天。这里显示的时间是画廊周六的大致营业时段，不是承诺——要跑远路之前先确认。', noResults:'没有找到',
+ venuePhoto:'场地照片',
+ locate:'显示我的位置', locating:'正在定位…', locDenied:'定位被拒绝。在浏览器里允许后就能在地图上看到自己。', locFailed:'没能取得位置。', away:'{d}', fromYou:'距你', exhibition:'长期展览', exhibitionSub:'展期跨好几天。这里显示的时间是画廊周六的大致营业时段，不是承诺——要跑远路之前先确认。', noResults:'没有找到',
  dark:'深色', light:'浅色', alsoCalled:'节目单上也叫'}
 };
 const CATNAME={
@@ -1156,6 +1172,7 @@ function applyBase(){
   $('.maptint').style.display=base==='sat'?'none':'';
 }
 $('#segMap').onclick=()=>{base='map';applyBase()};
+$('#locBtn').onclick=toggleLocate;
 $('#segSat').onclick=()=>{base='sat';applyBase()};
 
 /* one marker per session, built once; only visibility changes afterwards */
@@ -1175,6 +1192,47 @@ function markerHTML(e){
     <span class="stem"></span></span>`;
 }
 const planLayer=L.layerGroup().addTo(map);
+
+/* Where you are. Asked for only when the button is pressed — a permission
+   prompt on load is a good way to be refused for the rest of the evening. */
+let me=null,meLayer=L.layerGroup().addTo(map),watchId=null;
+function drawMe(){
+  meLayer.clearLayers();
+  if(!me)return;
+  L.circle([me.lat,me.lon],{radius:Math.max(20,me.acc||30),
+    color:getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(),
+    weight:1,opacity:.35,fillOpacity:.10}).addTo(meLayer);
+  L.marker([me.lat,me.lon],{interactive:false,zIndexOffset:5000,
+    icon:L.divIcon({className:'',html:'<span class="mypos" style="display:block;width:16px;height:16px"></span>',
+      iconSize:[16,16],iconAnchor:[8,8]})}).addTo(meLayer);
+}
+function metres(a,b){
+  const R=6371000,rad=x=>x*Math.PI/180;
+  const dLa=rad(b.lat-a.lat),dLn=rad(b.lon-a.lon);
+  const h=Math.sin(dLa/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLn/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+const distTo=e=>me?metres(me,{lat:e.la,lon:e.ln}):null;
+const fmtDist=m=>m<950?Math.round(m/10)*10+' m':(m/1000).toFixed(m<9500?1:0)+' km';
+function toggleLocate(){
+  if(watchId!==null){
+    navigator.geolocation.clearWatch(watchId);watchId=null;me=null;
+    $('#locBtn').setAttribute('aria-pressed','false');$('#locBtn').dataset.busy='0';
+    drawMe();render();return;
+  }
+  if(!navigator.geolocation){toast(t('locFailed'));return}
+  $('#locBtn').dataset.busy='1';toast(t('locating'));
+  watchId=navigator.geolocation.watchPosition(pos=>{
+    const first=!me;
+    me={lat:pos.coords.latitude,lon:pos.coords.longitude,acc:pos.coords.accuracy};
+    $('#locBtn').dataset.busy='0';$('#locBtn').setAttribute('aria-pressed','true');
+    drawMe();render();
+    if(first)map.setView([me.lat,me.lon],Math.max(map.getZoom(),15),{animate:true});
+  },err=>{
+    $('#locBtn').dataset.busy='0';watchId=null;
+    toast(err&&err.code===1?t('locDenied'):t('locFailed'));
+  },{enableHighAccuracy:true,maximumAge:15000,timeout:20000});
+}
 function syncMarkers(){
   $('#map').dataset.close=map.getZoom()>=15?'1':'0';
   const on=new Set(visible().map(e=>e.i));
@@ -1349,7 +1407,8 @@ function rowHTML(e){
     <span class="txt">
       <b>${esc(title(e))}</b>
       <p class="when">${esc(e.tl)}</p>
-      <p class="where"><i class="dot"></i>${esc(venue(e))}</p>
+      <p class="where"><i class="dot"></i>${esc(venue(e))}${(()=>{const d=distTo(e);
+        return d===null?'':` · ${fmtDist(d)}`})()}</p>
       ${b.length?`<span class="badges">${b.join('')}</span>`:''}
     </span>
     <button class="fav" aria-pressed="${inPlan}" data-fav="${e.i}" aria-label="${t('addPlan')}">
@@ -1374,7 +1433,7 @@ function renderList(){
     if(listSig==='empty')return;
     listSig='empty';
     $('#sbody').innerHTML=`<div class="empty"><h3>${t('nothing')}</h3><p>${t('nothingSub')}</p></div>`;return}
-  const sig=['list',lang,mode,T,sel,plan.length,list.length,list[0]&&list[0].i,
+  const sig=['list',lang,mode,T,sel,plan.length,me?1:0,list.length,list[0]&&list[0].i,
              list[list.length-1]&&list[list.length-1].i].join('|');
   if(sig===listSig)return;             /* same rows, same badges: leave the DOM alone */
   listSig=sig;
@@ -1512,7 +1571,8 @@ function openDetail(id,fromMap,keepScroll){
       ${e.rr?`<span class="dflag rare"><svg><use href="#i-petal"/></svg>${t('rareLong')}</span>`:''}
     </div>`:''}
     <p class="dmeta"><svg><use href="#i-clock"/></svg><b>${esc(e.tl)}</b></p>
-    <p class="dmeta"><svg><use href="#i-pin"/></svg><span>${esc(venue(e))}${e.a?'<br>'+esc(e.a):''}</span></p>
+    <p class="dmeta"><svg><use href="#i-pin"/></svg><span>${esc(venue(e))}${e.a?'<br>'+esc(e.a):''}${
+      (()=>{const d=distTo(e);return d===null?'':`<br>${t('away',{d:fmtDist(d)})} ${t('fromYou')}`})()}</span></p>
     ${note(e)?`<div class="why"><h4>${t('why')}</h4><p>${esc(note(e))}</p></div>`:''}
     <div class="dactions">
       <button class="btn-accent" id="dFav" aria-pressed="${inPlan}">
@@ -1602,6 +1662,8 @@ function applyLang(){
   $('#segMapLbl').textContent=t('map');
   $('#segSatLbl').textContent=t('satellite');
   $('#searchBtn').setAttribute('aria-label',t('search'));
+  $('#locBtn').setAttribute('aria-label',t('locate'));
+  $('#locBtn').title=t('locate');
   $('#searchInput').placeholder=t('searchPh');
   $('.brand').title=t('brandNote');
   $('#sharePlan').title=t('sharePlan');
