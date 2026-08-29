@@ -209,6 +209,15 @@ img{display:block;max-width:100%}
 .mk-r0{color:var(--r0)}
 .mk-r0 .bub{width:13px;height:13px;border-width:2px;background:var(--r0-bg)}
 .mk-r0 .bub svg{display:none}
+/* A cluster wears the highest rank inside it, so a group holding something
+   unmissable still reads as unmissable before you open it. These follow the
+   rank rules so they win the size on equal specificity. */
+.mk-cl .bub{width:100%;height:32px;padding:0 9px;border-radius:var(--corner-full);
+  font:800 13px/1 var(--mono);color:currentColor;letter-spacing:.2px}
+.mk-cl .bub svg{display:none}
+.mk-cl .lab{display:none}
+.mk-cl.has-plan{color:var(--primary)}
+.mk-cl.has-plan .bub{background:var(--primary-container)}
 .mk .lab{margin-bottom:3px;order:-1;max-width:160px;padding:2px 7px;border-radius:var(--corner-s);
   background:var(--surface);box-shadow:var(--elev-1);border:1px solid currentColor;
   color:var(--on-surface);font:700 10px/14px var(--font);
@@ -1253,22 +1262,93 @@ $('#segMap').onclick=()=>{base='map';applyBase()};
 $('#locBtn').onclick=toggleLocate;
 $('#segSat').onclick=()=>{base='sat';applyBase()};
 
-/* one marker per session, built once; only visibility changes afterwards */
-const marks={};
-EV.forEach(e=>{
-  const size=e.r===3?38:e.r===2?29:e.r===1?22:13;
-  const m=L.marker([e.la,e.ln],{
-    icon:L.divIcon({html:markerHTML(e),className:'',iconSize:[size,size],iconAnchor:[size/2,size/2]}),
-    zIndexOffset:e.r*1000,keyboard:false,riseOnHover:true});
-  m.on('click',()=>openDetail(e.i,true));
-  marks[e.i]=m;m.addTo(map);
-});
-function markerHTML(e){
-  return `<span class="mk mk-r${e.r}">
-    ${e.r>=2?'<span class="lab">'+esc(title(e).slice(0,36))+'</span>':''}
-    <span class="bub">${e.r>0?'<svg><use href="#'+(e.r>=2?'i-interested':'i-pin')+'"/></svg>':''}</span></span>`;
-}
+/* Two hundred and fifty pins is more DOM than a phone will pan smoothly, so
+   anything landing in the same cell of a fixed pixel grid is drawn as one pin
+   carrying a count. The grid is measured in world pixels at the current zoom,
+   which means the grouping only has to be recomputed when the zoom or the
+   filters change -- panning re-uses it and only re-tests the bounds. */
+const CELL=58;
+const pinLayer=L.layerGroup().addTo(map);
 const planLayer=L.layerGroup().addTo(map);
+let groupKey='',groups=[],painted='',shown=new Map();
+
+function planOrder(){
+  return new Map([...plan].sort((a,b)=>a.at-b.at).map((p,k)=>[p.i,k+1]));
+}
+function regroup(){
+  const on=new Set(visible().map(e=>e.i));
+  plan.forEach(p=>on.add(p.i));           /* your own stops never filter out */
+  const z=map.getZoom();
+  let h=0,n=0;
+  EV.forEach((e,idx)=>{if(on.has(e.i)){h=(h*31+idx)|0;n++}});
+  const key=[z,h,n,lang,plan.length,sel].join('|');
+  if(key===groupKey)return;
+  groupKey=key;
+  const cells=new Map();
+  EV.forEach(e=>{
+    if(!on.has(e.i))return;
+    const p=map.project([e.la,e.ln],z);
+    const k=((p.x/CELL)|0)+':'+((p.y/CELL)|0);
+    let g=cells.get(k);
+    if(!g){g={items:[],x:0,y:0};cells.set(k,g)}
+    g.items.push(e);g.x+=p.x;g.y+=p.y;
+  });
+  groups=[];
+  cells.forEach((g,k)=>{
+    const c=g.items.length;
+    const ll=c===1?L.latLng(g.items[0].la,g.items[0].ln)
+                  :map.unproject(L.point(g.x/c,g.y/c),z);
+    let r=0;g.items.forEach(e=>{if(e.r>r)r=e.r});
+    groups.push({k,items:g.items,n:c,at:ll,r});
+  });
+}
+function pinHTML(g,order){
+  if(g.n===1){
+    const e=g.items[0],k=order.get(e.i);
+    const cls='mk mk-r'+e.r+(k!==undefined?' in-plan':'')+(sel===e.i?' sel':'');
+    return `<span class="${cls}">
+      ${e.r>=2?'<span class="lab">'+esc(title(e).slice(0,36))+'</span>':''}
+      <span class="bub"${k!==undefined?` data-n="${k}"`:''}>${
+        e.r>0?'<svg><use href="#'+(e.r>=2?'i-interested':'i-pin')+'"/></svg>':''}</span></span>`;
+  }
+  const mine=g.items.some(e=>order.has(e.i));
+  return `<span class="mk mk-cl mk-r${g.r}${mine?' has-plan':''}"><span class="bub">${g.n}</span></span>`;
+}
+function makePin(g,order){
+  const single=g.n===1;
+  const w=single?(g.items[0].r===3?38:g.items[0].r===2?29:g.items[0].r===1?22:13)
+                :22+9*String(g.n).length;
+  const h=single?w:32;
+  const m=L.marker(g.at,{
+    icon:L.divIcon({html:pinHTML(g,order),className:'',iconSize:[w,h],iconAnchor:[w/2,h/2]}),
+    zIndexOffset:g.r*1000+(single?0:500),keyboard:false,riseOnHover:true});
+  m.on('click',()=>{
+    if(single){openDetail(g.items[0].i,true);return}
+    /* Zooming only helps if the group actually spreads out. Several sessions
+       at one museum share an address, and no zoom will separate those, so
+       open the one that got the highest rank instead of doing nothing. */
+    const la=g.items.map(e=>e.la),ln=g.items.map(e=>e.ln);
+    const span=Math.max(...la)-Math.min(...la)+Math.max(...ln)-Math.min(...ln);
+    if(span<1e-5||map.getZoom()>=18){
+      let top=g.items[0];g.items.forEach(e=>{if(e.r>top.r||(e.r===top.r&&e.s<top.s))top=e});
+      openDetail(top.i,true);return;
+    }
+    map.fitBounds(L.latLngBounds(g.items.map(e=>[e.la,e.ln])).pad(0.35),
+      {maxZoom:18,animate:true});
+  });
+  return m;
+}
+function paintPins(){
+  regroup();
+  if(painted!==groupKey){pinLayer.clearLayers();shown.clear();painted=groupKey}
+  const b=map.getBounds().pad(0.4),order=planOrder(),want=new Set();
+  groups.forEach(g=>{if(b.contains(g.at))want.add(g.k)});
+  shown.forEach((m,k)=>{if(!want.has(k)){pinLayer.removeLayer(m);shown.delete(k)}});
+  groups.forEach(g=>{
+    if(!want.has(g.k)||shown.has(g.k))return;
+    const m=makePin(g,order);shown.set(g.k,m);pinLayer.addLayer(m);
+  });
+}
 
 /* Where you are. Asked for only when the button is pressed — a permission
    prompt on load is a good way to be refused for the rest of the evening. */
@@ -1312,19 +1392,7 @@ function toggleLocate(){
 }
 function syncMarkers(){
   $('#map').dataset.close=map.getZoom()>=15?'1':'0';
-  const on=new Set(visible().map(e=>e.i));
-  const order=new Map([...plan].sort((a,b)=>a.at-b.at).map((p,k)=>[p.i,k+1]));
-  plan.forEach(p=>on.add(p.i));           /* your own stops never filter out */
-  EV.forEach(e=>{
-    const icon=marks[e.i]._icon; if(!icon)return;
-    const el=icon.firstElementChild; if(!el)return;
-    el.dataset.on=on.has(e.i)?'1':'0';
-    el.classList.toggle('sel',sel===e.i);
-    const k=order.get(e.i);
-    el.classList.toggle('in-plan',k!==undefined);
-    const bub=el.querySelector('.bub');
-    if(bub){if(k!==undefined)bub.dataset.n=k;else bub.removeAttribute('data-n')}
-  });
+  paintPins();
   planLayer.clearLayers();
   if(view==='plan'&&plan.length>1){
     const pts=[...plan].sort((a,b)=>a.at-b.at).map(p=>byId[p.i]).filter(Boolean).map(e=>[e.la,e.ln]);
@@ -1333,7 +1401,7 @@ function syncMarkers(){
   }
 }
 function relabelMarkers(){
-  EV.forEach(e=>{const icon=marks[e.i]._icon;if(icon)icon.innerHTML=markerHTML(e)});
+  groupKey='';                            /* labels are language-dependent */
   syncMarkers();
 }
 function focusOn(e){
@@ -2114,7 +2182,7 @@ map.whenReady(()=>setTimeout(()=>{
   /* somebody else's evening arrives framed, so the list and the map agree */
   if(urlPlan&&plan.length){calcSnaps();fitTo(plan.map(p=>byId[p.i]))}
 },80));
-map.on('zoomend',syncMarkers);
+map.on('zoomend moveend',syncMarkers);
 </script>
 </body>
 </html>
