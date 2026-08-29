@@ -170,8 +170,12 @@ img{display:block;max-width:100%}
 /* ---- base-map switch, second row, left side, clear of everything ---- */
 .mapchrome{position:absolute;z-index:500;left:12px;top:calc(62px + env(safe-area-inset-top));
   display:flex;align-items:center;gap:8px}
-.locate{width:36px;height:36px;flex:0 0 36px}
-.locate svg{width:18px;height:18px}
+/* Where Google Maps keeps it: bottom right, riding just above the sheet, so it
+   stays reachable by the thumb whatever height the list is at. */
+.locate{position:absolute;z-index:505;right:12px;width:44px;height:44px;
+  top:calc(var(--sheet-y,60%) - 56px);
+  transition:top var(--dur-long2) var(--ease-emph-decel)}
+.locate svg{width:20px;height:20px}
 .locate[aria-pressed="true"]{background:var(--primary-container);color:var(--on-primary-container)}
 .locate[data-busy="1"] svg{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -270,7 +274,7 @@ img{display:block;max-width:100%}
 /* ============================================================
    TIMELINE — fixed height, three fixed rows. Nothing here wraps.
    ============================================================ */
-.timeline{position:absolute;z-index:520;left:0;right:0;bottom:auto;
+.timeline{position:absolute;z-index:505;left:0;right:0;bottom:auto;
   top:calc(62px + env(safe-area-inset-top));
   display:flex;justify-content:flex-end;pointer-events:none;padding:0 12px}
 .tl-inner{pointer-events:auto;width:100%;overflow:hidden;
@@ -303,10 +307,11 @@ img{display:block;max-width:100%}
   padding:2px 5px 2px 13px}
 /* expanded, the card takes the whole row, so what it grew next to steps aside */
 .mapwrap.tl-open .mapchrome{opacity:0;pointer-events:none;transition:opacity var(--dur-short3)}
-/* and with the sheet all the way up there is no map left for them to control */
+/* The list outranks the map's own controls: they sit below it and are simply
+   covered as it rises, rather than floating over the thing being read. */
 .mapwrap.sheet-full .mapchrome,
-.mapwrap.sheet-full .timeline{opacity:0;pointer-events:none}
-.mapwrap .mapchrome,.mapwrap .timeline{transition:opacity var(--dur-short4) var(--ease-standard)}
+.mapwrap.sheet-full .locate{opacity:0;pointer-events:none}
+.mapwrap .mapchrome,.mapwrap .locate{transition:opacity var(--dur-short4) var(--ease-standard)}
 .timeline[data-collapsed="1"] .tl-sub,
 .timeline[data-collapsed="1"] .tl-track,
 .timeline[data-collapsed="1"] .tl-ticks{display:none}
@@ -318,7 +323,7 @@ img{display:block;max-width:100%}
 /* ============================================================
    SHEET — the list, the detail and the plan all live here
    ============================================================ */
-.sheet{position:absolute;z-index:510;left:0;right:0;top:0;height:100%;
+.sheet{position:absolute;z-index:510;left:0;right:0;top:0;height:calc(100% - var(--nav-h) - env(safe-area-inset-bottom));
   background:var(--surface);border-radius:var(--corner-xl) var(--corner-xl) 0 0;
   box-shadow:var(--elev-3);display:flex;flex-direction:column;overflow:hidden;
   transform:translateY(var(--y,62%));touch-action:none;
@@ -422,6 +427,13 @@ img{display:block;max-width:100%}
 .bdg.sess{background:var(--surface-container-highest);color:var(--on-surface-variant);font-family:var(--mono)}
 
 .group-h{display:flex;align-items:center;gap:8px;padding:16px 2px 8px}
+.group-h.time{position:sticky;top:0;z-index:2;margin:0 -14px;padding:10px 16px 8px;
+  background:linear-gradient(var(--surface) 74%,transparent)}
+.group-h.time b{font:700 15px/20px var(--mono);letter-spacing:-.4px;text-transform:none;
+  color:var(--on-surface)}
+.group-h.time span{color:var(--on-surface-variant)}
+.group-h.time.now b{color:var(--r3)}
+.group-h.time.now::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--r3)}
 .group-h i{width:9px;height:9px;border-radius:50%;background:var(--rk-ink)}
 .group-h b{font:700 12px/16px var(--font);letter-spacing:1.1px;text-transform:uppercase}
 .group-h span{color:var(--on-surface-variant);font:400 12px/16px var(--font)}
@@ -537,7 +549,27 @@ img{display:block;max-width:100%}
 .preset span{display:block;margin-top:2px;color:var(--on-surface-variant);font:400 13px/18px var(--font)}
 
 /* ---- overlays ---- */
-.snack{position:fixed;left:16px;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:900;
+:root{--nav-h:64px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:530;height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  background:var(--surface);border-top:1px solid var(--outline-variant);
+  display:flex;align-items:center;justify-content:space-around}
+.nav-item{border:0;background:none;cursor:pointer;width:33%;padding:0;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  color:var(--on-surface-variant);font:600 11px/14px var(--font)}
+.nav-ind{position:relative;width:56px;height:30px;border-radius:var(--corner-full);
+  display:grid;place-items:center}
+.nav-ind::after{content:"";position:absolute;inset:0;border-radius:inherit;
+  background:var(--primary-container);transform:scale(.4);opacity:0;
+  transition:transform var(--dur-med1) var(--ease-emphasized),opacity var(--dur-short3)}
+.nav-item[aria-selected="true"] .nav-ind::after{transform:none;opacity:1}
+.nav-ind svg{width:22px;height:22px;position:relative;z-index:1}
+.nav-item[aria-selected="true"]{color:var(--on-surface)}
+.nav-item[aria-selected="true"] .nav-ind{color:var(--on-primary-container)}
+.nav-ind .badge{position:absolute;top:-2px;right:8px;min-width:17px;height:17px;padding:0 5px;
+  border-radius:var(--corner-full);background:var(--r3);color:var(--surface);
+  font:700 10px/17px var(--mono);text-align:center;z-index:2;box-shadow:0 0 0 2px var(--surface)}
+.snack{position:fixed;left:16px;right:16px;bottom:calc(var(--nav-h) + 14px + env(safe-area-inset-bottom));z-index:900;
   padding:13px 8px 13px 16px;border-radius:var(--corner-l);
   background:var(--inverse-surface);color:var(--inverse-on-surface);
   display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -601,8 +633,9 @@ img{display:block;max-width:100%}
   .sbody{overflow-y:auto !important;padding-bottom:24px}
   .dhero{margin-left:-14px;margin-right:-14px}
   .timeline{left:auto;width:calc(100% - 436px);padding:0 24px;top:calc(62px + env(safe-area-inset-top))}
+  .locate{top:auto;bottom:calc(var(--nav-h) + 24px)}
   .snack{left:auto;right:24px;width:340px;bottom:24px}
-  .fsheet{left:auto;right:24px;bottom:24px;width:410px;
+  .fsheet{left:auto;right:24px;bottom:calc(var(--nav-h) + 24px);width:410px;
     border-radius:var(--corner-xl);max-height:66%}
   .leaflet-control-zoom{display:block}
   .leaflet-top.leaflet-right{margin-top:10px}
@@ -664,6 +697,7 @@ img{display:block;max-width:100%}
   <symbol id="i-prev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l-6 6 6 6"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6l6 6-6 6"/></symbol>
   <symbol id="i-lang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h8M8 3.5v2M9.6 5.5c-.6 3.6-2.6 6.4-5.6 8M6.4 9.4c1.2 2 3 3.4 5.1 4.2M12.2 20.5l3.6-9 3.6 9M13.6 17.6h4.4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6.5h16M4 12h16M4 17.5h11"/></symbol>
   <symbol id="i-locate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="8.5"/><path d="M12 1.6v2.6M12 19.8v2.6M22.4 12h-2.6M4.2 12H1.6"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
@@ -701,7 +735,6 @@ img{display:block;max-width:100%}
 
     <div class="topbar">
       <div class="pillrow">
-        <button class="pill" id="planPill" aria-pressed="false"><svg class="o"><use href="#i-bloom-o"/></svg><svg class="f" hidden><use href="#i-bloom"/></svg><span id="planLbl">My plan</span><span class="n" id="planN">0</span></button>
         <button class="pill" data-sheet="when" data-active="true"><svg><use href="#i-clock"/></svg><span id="whenLbl">On now</span></button>
         <button class="pill" data-sheet="rank" data-active="true"><svg><use href="#i-petal"/></svg><span id="rankLbl">Top picks</span></button>
         <button class="pill" data-sheet="type" data-active="false"><svg><use href="#i-tune"/></svg><span id="typeLbl">Type</span><span class="n" hidden></span></button>
@@ -718,8 +751,8 @@ img{display:block;max-width:100%}
       <button id="segMap" aria-pressed="true"><svg><use href="#i-map"/></svg><span id="segMapLbl">Map</span></button>
       <button id="segSat" aria-pressed="false"><svg><use href="#i-sat"/></svg><span id="segSatLbl">Satellite</span></button>
     </div>
-    <button class="circle-btn locate" id="locBtn" aria-pressed="false"><svg><use href="#i-locate"/></svg></button>
     </div>
+    <button class="circle-btn locate" id="locBtn" aria-pressed="false"><svg><use href="#i-locate"/></svg></button>
 
     <div class="timeline" id="timeline" data-collapsed="0">
       <div class="tl-inner" id="tlInner">
@@ -741,6 +774,15 @@ img{display:block;max-width:100%}
       </div>
     </div>
   </div>
+
+  <nav class="nav" id="nav" role="tablist" aria-label="Sections">
+    <button class="nav-item" role="tab" aria-selected="true" data-tab="all">
+      <span class="nav-ind"><svg><use href="#i-list"/></svg></span><span id="navAll">All events</span></button>
+    <button class="nav-item" role="tab" aria-selected="false" data-tab="top">
+      <span class="nav-ind"><svg><use href="#i-petal"/></svg></span><span id="navTop">Highlights</span></button>
+    <button class="nav-item" role="tab" aria-selected="false" data-tab="plan">
+      <span class="nav-ind"><svg><use href="#i-bloom-o"/></svg><span class="badge" id="planN" hidden>0</span></span><span id="navPlan">My plan</span></button>
+  </nav>
 </div>
 
 <div class="scrim" id="scrim"></div>
@@ -815,7 +857,7 @@ en:{code:'EN',name:'English',
  special:'Today only', specialQ:'What today has that tomorrow does not',
  brandNote:'An unofficial planner. Programme from Linked Events and Helsinki Festival; ranks and notes are editorial.',
  search:'Search', searchPh:'Event, venue or street', results:'{n} results for “{q}”', typeToSearch:'Search everything on today by name, venue, street or description.',
- venuePhoto:'Photograph of the venue',
+ venuePhoto:'Photograph of the venue', allDay:'Open all day', startsAt:'starts', allEvents:'All events', highlights:'Highlights',
  locate:'Show where I am', locating:'Finding you…', locDenied:'Location was refused. Allow it in the browser to see yourself on the map.', locFailed:'Could not get a location.', away:'{d} away', fromYou:'from you', exhibition:'Exhibition', exhibitionSub:'A run of several days. The hours shown are the shape of a gallery Saturday, not a promise — check before a long trip.', noResults:'Nothing found',
  dark:'Dark', light:'Light', alsoCalled:'Also listed as'},
 
@@ -872,7 +914,7 @@ fi:{code:'FI',name:'Suomi',
  special:'Vain tänään', specialQ:'Mitä tänään on jota huomenna ei',
  brandNote:'Epävirallinen suunnittelija. Ohjelma Linked Eventsistä ja Helsingin juhlaviikoilta; tasot ja huomiot ovat toimituksellisia.',
  search:'Haku', searchPh:'Tapahtuma, paikka tai katu', results:'{n} osumaa haulle ”{q}”', typeToSearch:'Hae koko päivän ohjelmasta nimellä, paikalla, kadulla tai kuvauksella.',
- venuePhoto:'Kuva paikasta',
+ venuePhoto:'Kuva paikasta', allDay:'Auki koko päivän', startsAt:'alkaa', allEvents:'Kaikki', highlights:'Poiminnat',
  locate:'Näytä missä olen', locating:'Etsitään sinua…', locDenied:'Sijainti evättiin. Salli se selaimessa nähdäksesi itsesi kartalla.', locFailed:'Sijaintia ei saatu.', away:'{d} päässä', fromYou:'sinusta', exhibition:'Näyttely', exhibitionSub:'Kestää useita päiviä. Näytetyt kellonajat ovat galleria-lauantain muoto, eivät lupaus — tarkista ennen pitkää matkaa.', noResults:'Ei osumia',
  dark:'Tumma', light:'Vaalea', alsoCalled:'Ohjelmassa myös nimellä'},
 
@@ -929,7 +971,7 @@ zh:{code:'中',name:'中文',
  special:'仅限今天', specialQ:'今天有而明天没有的',
  brandNote:'非官方规划工具。节目数据来自 Linked Events 与赫尔辛基艺术节；等级和点评是编辑观点。',
  search:'搜索', searchPh:'活动、场地或街道', results:'「{q}」找到 {n} 个结果', typeToSearch:'按名称、场地、街道或介绍搜索今天的全部节目。',
- venuePhoto:'场地照片',
+ venuePhoto:'场地照片', allDay:'整天开放', startsAt:'开始', allEvents:'全部活动', highlights:'精选', 
  locate:'显示我的位置', locating:'正在定位…', locDenied:'定位被拒绝。在浏览器里允许后就能在地图上看到自己。', locFailed:'没能取得位置。', away:'{d}', fromYou:'距你', exhibition:'长期展览', exhibitionSub:'展期跨好几天。这里显示的时间是画廊周六的大致营业时段，不是承诺——要跑远路之前先确认。', noResults:'没有找到',
  dark:'深色', light:'浅色', alsoCalled:'节目单上也叫'}
 };
@@ -1427,12 +1469,31 @@ function rowHTML(e){
   </div>`;
 }
 let listSig=null;
+/* Grouped by the hour a thing starts, because that is the question being asked
+   at half past three. The rank still travels with each row as its badge.
+   Multi-day runs have no start of their own - 12:00 is a stand-in - so they sit
+   in one group at the end instead of burying an hour under 133 of them. */
 function listHTML(list){
-  return [3,2,1,0].map(r=>{
-    const items=list.filter(e=>e.r===r);
-    if(!items.length)return '';
-    return `<div class="group-h" style="${rv(r)}"><i></i><b>${t('rankGroup')[r]}</b><span>${items.length}</span></div>
-            <div class="rows">${items.map(rowHTML).join('')}</div>`}).join('');
+  const timed=list.filter(e=>!e.ex).sort((a,b)=>a.s-b.s||b.r-a.r);
+  const allday=list.filter(e=>e.ex).sort((a,b)=>b.r-a.r||a.te.localeCompare(b.te));
+  let out='',hour=null;
+  timed.forEach(e=>{
+    const h=Math.floor(e.s/60);
+    if(h!==hour){
+      if(hour!==null)out+='</div>';
+      hour=h;
+      const count=timed.filter(x=>Math.floor(x.s/60)===h).length;
+      const isNow=h===Math.floor(T/60);
+      out+=`<div class="group-h time ${isNow?'now':''}"><b>${String(h%24).padStart(2,'0')}:00</b>`+
+           `<span>${count}</span></div><div class="rows">`;
+    }
+    out+=rowHTML(e);
+  });
+  if(hour!==null)out+='</div>';
+  if(allday.length)
+    out+=`<div class="group-h time"><b>${t('allDay')}</b><span>${allday.length}</span></div>`+
+         `<div class="rows">${allday.map(rowHTML).join('')}</div>`;
+  return out;
 }
 function renderList(){
   const list=visible().sort((a,b)=>b.r-a.r||a.s-b.s);
@@ -1458,11 +1519,7 @@ function renderSearch(){
     $('#sbody').innerHTML=`<div class="empty"><h3>${t('search')}</h3><p>${t('typeToSearch')}</p></div>`;return}
   if(!list.length){
     $('#sbody').innerHTML=`<div class="empty"><h3>${t('noResults')}</h3><p>${t('nothingSub')}</p></div>`;return}
-  $('#sbody').innerHTML=[3,2,1,0].map(r=>{
-    const items=list.filter(e=>e.r===r);
-    if(!items.length)return '';
-    return `<div class="group-h" style="${rv(r)}"><i></i><b>${t('rankGroup')[r]}</b><span>${items.length}</span></div>
-            <div class="rows">${items.map(rowHTML).join('')}</div>`}).join('');
+  $('#sbody').innerHTML=listHTML(list);
 }
 function walk(a,b){
   const R=6371000,rad=x=>x*Math.PI/180;
@@ -1658,15 +1715,14 @@ function render(){
   /* measureChrome reads a layout property, which after writing the list means
      laying the whole list out synchronously. The dock only changes size when it
      is opened, closed, resized or relabelled, so it is measured there instead. */
-  $('#planN').textContent=plan.length;
-  $('#planPill').setAttribute('aria-pressed',view==='plan');
-  $('.o',$('#planPill')).hidden=view==='plan';
-  $('.f',$('#planPill')).hidden=view!=='plan';
+  syncNav();
 }
 function applyLang(){
   document.documentElement.lang=lang==='zh'?'zh-Hans':lang;
   $('#langBtn').textContent=STR[lang].code;
-  $('#planLbl').textContent=t('myPlan');
+  $('#navAll').textContent=t('allEvents');
+  $('#navTop').textContent=t('highlights');
+  $('#navPlan').textContent=t('myPlan');
   $('#typeLbl').textContent=t('type');
   $('#whereLbl').textContent=t('shelter');
   $('#segMapLbl').textContent=t('map');
@@ -1810,9 +1866,24 @@ $('#searchBtn').onclick=()=>{
 };
 $('#searchInput').addEventListener('input',e=>{query=e.target.value.trim();render()});
 $('#searchClear').onclick=()=>{query='';$('#searchInput').value='';render();$('#searchInput').focus()};
-$('#planPill').onclick=()=>{
-  view=view==='plan'?'list':'plan';sel=null;render();
-  if(view==='plan'&&plan.length)fitTo(plan.map(p=>byId[p.i]))};
+/* Three sections, and the rank filter follows the one you picked - Highlights
+   is the same list with the floor raised, not a different list. */
+function setTab(tab){
+  sel=null;query='';$('#searchInput').value='';returnTo=null;
+  if(tab==='plan'){view='plan'}
+  else{view='list';minRank=tab==='top'?2:0}
+  syncPills();render();
+  if(tab==='plan'&&plan.length)fitTo(plan.map(p=>byId[p.i]));
+}
+$$('.nav-item').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function syncNav(){
+  const tab=view==='plan'?'plan':(minRank>=2?'top':'all');
+  $$('.nav-item').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
+  const n=$('#planN');n.hidden=!plan.length;n.textContent=plan.length;
+  const on=view==='plan';
+  $('.nav-item[data-tab="plan"] .nav-ind svg use')
+    .setAttribute('href',on?'#i-bloom':'#i-bloom-o');
+}
 
 /* ---------------- filter sheets ---------------- */
 const FILTERS={
@@ -1928,7 +1999,8 @@ const sheet=$('#sheet'),grab=$('#grab'),sbody=$('#sbody');
 let snaps=[],snapIdx=1,dragging=false,startY=0,startTop=0,lastY=0,lastT=0,vel=0;
 const mobile=()=>window.matchMedia('(max-width:900px)').matches;
 function calcSnaps(){
-  const h=window.innerHeight;
+  const h=window.innerHeight-parseInt(getComputedStyle(document.documentElement)
+    .getPropertyValue('--nav-h'),10)-(window.visualViewport?0:0);
   snaps=[Math.max(180,h-124),Math.round(h*0.42),72];
 }
 function setSnap(i,animate=true){

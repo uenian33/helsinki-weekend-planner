@@ -18,9 +18,14 @@ in time*.
   The band behind it is the hourly rain probability, the shaded half is after
   sunset (20:34), the filled area is how many events are running, and the ember
   dots are the things that happen today and not again. Collapses to a pill.
-- **Ranks, not favourites.** R3 unmissable, R2 strong enough to reroute around,
-  R1 good if you are passing, and the rest of the programme underneath. Ranked
-  events carry a written note saying why they sit where they do.
+- **Three sections**, at the foot of the screen: *All events*, *Highlights* —
+  the same list with the rank floor raised, not a different one — and *My plan*.
+- **The list is a clock.** Grouped by the hour a thing starts, because that is
+  the question being asked at half past three. The rank travels with each row as
+  its badge: R3 unmissable, R2 strong enough to reroute around, R1 good if you
+  are passing. Ranked events carry a written note saying why they sit where they
+  do. Multi-day runs have no start of their own, so they sit in one group at the
+  end rather than burying an hour under 133 of them.
 - **Real map**, light and dark, with a satellite layer.
 - **My plan.** Add stops, set an arrival time for each, and the planner works out
   the walk between them — distinguishing a fixed performance, which ends when it
