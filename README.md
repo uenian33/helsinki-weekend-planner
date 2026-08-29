@@ -38,6 +38,32 @@ in time*.
   hour's rain probability, sold out, which sitting of a repeated show this is,
   and *Exhibition* for a multi-day run whose hours here are approximate.
 
+## Sharing a link
+
+The link says which language it opens in, so you can hand a Finnish friend the
+Finnish one without telling them to change a setting.
+
+| Link | Opens in |
+|---|---|
+| `…/helsinki-weekend-planner/` | English, light theme |
+| `…/helsinki-weekend-planner/en/` · `/fi/` · `/zh/` (or `/ch/`) | that language |
+| `…/helsinki-weekend-planner/?lang=fi` | the same thing as a query |
+
+A language in the link beats whatever the reader chose before, so a shared link
+opens the way you sent it, and switching language in the app moves the URL with
+it — a link saying `/zh/` never shows Finnish. With nothing specified it opens
+in English: the browser's own language is deliberately not consulted, because
+the default has to be predictable for whoever you hand the plain link to. The
+language directories are real copies rather than redirects, since the point of
+the feature is the link itself and a redirect rewrites it on the way through.
+
+**Sharing an evening.** *Send this evening to a friend*, at the foot of My plan,
+hands the route to the phone's share sheet where there is one and to the
+clipboard where there is not: a readable list of stops plus a link carrying the
+route, `…/zh/?plan=cur0_930,cur17_1050`. Opening it shows that evening without
+touching the reader's own saved plan — the first edit they make is what adopts
+it.
+
 ## Today, specifically
 
 Twenty degrees, no rain until well after midnight, sunset at 20:34, wind 24–28
