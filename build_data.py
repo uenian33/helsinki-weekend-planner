@@ -10,7 +10,7 @@ import datetime as dt, html, json, os, re, sys, time, urllib.parse, urllib.reque
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
-from curated import CURATED, DAY, NOTES_FI, NOTES_ZH
+from curated import CURATED, DAY, NOTES_FI, NOTES_ZH, LINKS
 
 TZ = dt.timezone(dt.timedelta(hours=3))            # Helsinki, August
 DAY0 = dt.datetime(2026, 8, 29, 0, 0, tzinfo=TZ)
@@ -28,6 +28,8 @@ MANUAL = {
     'liisanpuistikko':     (60.17382, 24.96053, 'Liisanpuistikko', 'Liisanpuistikko'),
     'lehtisaari':          (60.17850, 24.85253, 'Lehtisaari', 'Lehtisaari'),
     'malja':               (60.16069, 24.92928, 'Malja', 'Hietalahdenranta 6'),
+    'ham':                 (60.170155, 24.930195, 'HAM Helsingin taidemuseo', 'Eteläinen Rautatiekatu 8'),
+    'sompasauna':          (60.180751, 24.998883, 'Sompasauna', 'Kansanpuistonpolku 5'),
 }
 
 # ---------------------------------------------------------------- helpers
@@ -87,12 +89,28 @@ def resolve_place(query, cache):
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'weekend-planner/1.0'})
             data = json.loads(urllib.request.urlopen(req, timeout=45).read())['data']
+            # The registry ranks by a loose full-text match, so a short query can
+            # come back led by a street name that merely contains it -- "HAM" hit
+            # "Uimastadion / Maauimala" on Hammarskjoldintie, two km off. Take the
+            # first place whose own name matches, and only then fall back.
+            best = None
             for p in data:
                 pos = (p.get('position') or {}).get('coordinates')
-                if pos:
-                    hit = {'name': p.get('name') or {}, 'address': p.get('street_address') or {},
-                           'lon': pos[0], 'lat': pos[1]}
+                if not pos:
+                    continue
+                cand = {'name': p.get('name') or {}, 'address': p.get('street_address') or {},
+                        'lon': pos[0], 'lat': pos[1]}
+                names = [fold(v) for v in cand['name'].values() if v]
+                if any(key in n or n in key for n in names):
+                    hit = cand
                     break
+                if best is None:
+                    best = cand
+            else:
+                hit = best
+                if hit:
+                    print(f'  place fallback ({query}): no name match, using '
+                          f'{hit["name"].get("fi") or hit["name"].get("en")}')
             break
         except Exception as exc:
             print(f'  place lookup retry ({query}): {exc}')
@@ -243,8 +261,53 @@ def from_curated(cache):
             a=u(pa.get('fi') or pa.get('en')),
             la=round(place['lat'], 5), ln=round(place['lon'], 5), s=s_min, e=e_min,
             d='', df='', note=note, c=categorise(tags, name_en), cs=tags, img='',
-            u='', ue='', price=price, r=rank, long_run=False, tags=tags))
+            u=LINKS.get(name_en, ''), ue=LINKS.get(name_en, ''),
+            price=price, r=rank, long_run=False, tags=tags))
     return rows
+
+# ---------------------------------------------------------------- links
+def verify_links(rows):
+    """Check every official link and drop the ones that are not there.
+
+    The fallback pattern for events with no info_url of their own does not hold
+    for every source - Espoo's events are not on tapahtumat.hel.fi at all - so
+    rather than trust the pattern, ask. A 403 is a site refusing a script, not a
+    missing page, so those are kept.
+    """
+    import concurrent.futures as cf
+    urls = sorted({u for r in rows for u in (r.get('u'), r.get('ue')) if u})
+    status = {}
+
+    def check(url):
+        req = urllib.request.Request(url, method='HEAD', headers={
+            'User-Agent': 'Mozilla/5.0 (compatible; weekend-planner link check)'})
+        try:
+            with urllib.request.urlopen(req, timeout=25) as r:
+                return url, r.status
+        except urllib.error.HTTPError as e:
+            if e.code == 405:                      # HEAD refused; try a real GET
+                try:
+                    req2 = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(req2, timeout=25) as r2:
+                        return url, r2.status
+                except Exception:
+                    return url, 0
+            return url, e.code
+        except Exception:
+            return url, 0
+
+    with cf.ThreadPoolExecutor(max_workers=12) as pool:
+        for url, code in pool.map(check, urls):
+            status[url] = code
+
+    dead = {u for u, c in status.items() if c in (404, 410)}
+    for r in rows:
+        for k in ('u', 'ue'):
+            if r.get(k) in dead:
+                r[k] = ''
+    print(f'links: {len(urls)} checked, {len(dead)} dead and removed, '
+          f'{sum(1 for r in rows if not r["ue"])} events now without one')
+
 
 # ---------------------------------------------------------------- merge
 def main():
@@ -333,6 +396,7 @@ def main():
     print(f'photographs: {sum(1 for o in out if o["img"])} of {len(out)}'
           f' ({filled} matched to an API entry, {vfilled} venue photographs)')
 
+    verify_links(out)
     out.sort(key=lambda o: (o['s'], -o['r']))
     json.dump(out, open(os.path.join(ROOT, 'raw', 'app_events.json'), 'w'),
               ensure_ascii=False, separators=(',', ':'))
