@@ -1206,7 +1206,8 @@ const ARC=n=>`https://server.arcgisonline.com/ArcGIS/rest/services/${n}/MapServe
 const map=L.map('map',{zoomControl:false,attributionControl:true}).setView([60.1690,24.9530],14);
 L.control.zoom({position:'topright'}).addTo(map);
 const layers={
- light:L.tileLayer(ARC('World_Street_Map'),{maxZoom:19,attribution:ESRI_C}),
+ light:L.tileLayer(ARC('Canvas/World_Light_Gray_Base'),{maxZoom:19,attribution:ESRI_C}),
+ lightref:L.tileLayer(ARC('Canvas/World_Light_Gray_Reference'),{maxZoom:19,attribution:''}),
  dark:L.tileLayer(ARC('Canvas/World_Dark_Gray_Base'),{maxZoom:19,attribution:ESRI_C}),
  darkref:L.tileLayer(ARC('Canvas/World_Dark_Gray_Reference'),{maxZoom:19,attribution:''}),
  sat:L.tileLayer(ARC('World_Imagery'),{maxZoom:19,attribution:ESRI}),
@@ -1222,7 +1223,7 @@ function applyBase(){
   Object.values(layers).forEach(l=>map.hasLayer(l)&&map.removeLayer(l));
   if(base==='sat'){layers.sat.addTo(map);layers.satlab.addTo(map)}
   else if(isDark()){layers.dark.addTo(map);layers.darkref.addTo(map)}
-  else layers.light.addTo(map);            /* the street map carries its own labels */
+  else{layers.light.addTo(map);layers.lightref.addTo(map)}
   $('#segMap').setAttribute('aria-pressed',base==='map');
   $('#segSat').setAttribute('aria-pressed',base==='sat');
   $('.maptint').style.display=base==='sat'?'none':'';
