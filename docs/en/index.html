@@ -338,10 +338,10 @@ img{display:block;max-width:100%}
 .sheet{position:absolute;z-index:510;left:0;right:0;top:0;height:calc(100% - var(--nav-h) - env(safe-area-inset-bottom));
   background:var(--surface);border-radius:var(--corner-xl) var(--corner-xl) 0 0;
   box-shadow:var(--elev-3);display:flex;flex-direction:column;overflow:hidden;
-  transform:translateY(var(--y,62%));touch-action:none;
+  transform:translateY(var(--y,62%));
   transition:transform var(--dur-long2) var(--ease-emph-decel)}
 .sheet.dragging{transition:none}
-.grab{flex:0 0 auto;padding:0 16px 8px;cursor:grab;user-select:none}
+.grab{flex:0 0 auto;padding:0 16px 8px;cursor:grab;user-select:none;touch-action:none}
 .grab:active{cursor:grabbing}
 .handle{height:22px;display:grid;place-items:center;padding-top:8px}
 .handle i{width:36px;height:4px;border-radius:var(--corner-full);background:var(--outline-variant)}
@@ -377,7 +377,7 @@ img{display:block;max-width:100%}
   cursor:pointer;background:var(--surface-container-highest);color:var(--on-surface-variant);
   display:grid;place-items:center}
 .searchbar button svg{width:15px;height:15px}
-.sbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+.sbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
   padding:0 14px calc(28px + var(--sheet-y,0px));scrollbar-width:none}
 .sbody::-webkit-scrollbar{display:none}
 .sbody.locked{overflow:hidden}
@@ -400,7 +400,7 @@ img{display:block;max-width:100%}
 .row .thumb img{width:100%;height:100%;object-fit:cover}
 .row .thumb .rkb{position:absolute;left:4px;top:4px;height:17px;padding:0 5px;border-radius:5px;
   background:var(--rk-ink);color:var(--surface);font:800 10px/17px var(--mono);
-  display:inline-flex;align-items:center;gap:3px;box-shadow:var(--elev-1)}
+  display:inline-flex;align-items:center;gap:3px}
 .row .thumb .rkb svg{width:9px;height:9px}
 .row .thumb .rkb[data-r="0"]{display:none}
 .row .txt{flex:1;min-width:0}
@@ -1484,12 +1484,14 @@ function scrubFrom(x){
   scrubRAF=requestAnimationFrame(()=>{
     scrubRAF=0;
     const r=trackRect||$('#tlTrack').getBoundingClientRect();
+    if(!r.width)return;
     setT(T0+Math.round(((scrubX-r.left)/r.width)*SPAN/5)*5);
   });
 }
 $('#tlTrack').addEventListener('pointerdown',e=>{
   scrubbing=true;trackRect=$('#tlTrack').getBoundingClientRect();
-  $('#tlTrack').setPointerCapture(e.pointerId);scrubFrom(e.clientX);e.preventDefault()});
+  try{$('#tlTrack').setPointerCapture(e.pointerId)}catch(err){}
+  scrubFrom(e.clientX);e.preventDefault()});
 $('#tlTrack').addEventListener('pointermove',e=>{if(scrubbing)scrubFrom(e.clientX)});
 $('#tlTrack').addEventListener('pointerup',()=>{scrubbing=false;trackRect=null});
 $('#tlTrack').addEventListener('pointercancel',()=>{scrubbing=false;trackRect=null});
@@ -1529,7 +1531,7 @@ $('#tlReset').onclick=()=>{mode='all';sel=null;if(view==='detail')view='list';
 $('#clock').onclick=()=>setT(clampT(nowMin()));
 $('#tPrev').onclick=()=>setT(T-15);
 $('#tNext').onclick=()=>setT(T+15);
-function setT(m){T=Math.max(T0,Math.min(T1,m));if(view==='detail'){view='list';sel=null}render()}
+function setT(m){if(!Number.isFinite(m))return;T=Math.max(T0,Math.min(T1,m));if(view==='detail'){view='list';sel=null}render()}
 
 /* ---------------- rows and views ---------------- */
 /* Rewritten per output directory by build_public.py, because the language
@@ -2192,15 +2194,21 @@ grab.addEventListener('pointerdown',e=>{
   if(!mobile()||e.target.closest('button,input,.searchbar'))return;
   calcSnaps();dragging=true;sheet.classList.add('dragging');
   startY=e.clientY;startTop=parseFloat(sheet.style.getPropertyValue('--y'))||snaps[1];
-  lastY=e.clientY;lastT=performance.now();vel=0;grab.setPointerCapture?.(e.pointerId)});
-window.addEventListener('pointermove',e=>{
-  if(!dragging)return;
+  lastY=e.clientY;lastT=performance.now();vel=0;
+  /* attach before capturing: setPointerCapture throws if the pointer has gone
+     already, and the drag must not be left without its move handler */
+  window.addEventListener('pointermove',onDragMove,{passive:false});
+  try{grab.setPointerCapture(e.pointerId)}catch(err){}});
+function onDragMove(e){
   const now=performance.now();vel=(e.clientY-lastY)/Math.max(1,now-lastT);
   lastY=e.clientY;lastT=now;
   sheet.style.setProperty('--y',Math.max(snaps[2]-16,Math.min(snaps[0]+70,startTop+e.clientY-startY))+'px');
-  e.preventDefault()},{passive:false});
+  e.preventDefault();
+}
 function endDrag(){
-  if(!dragging)return;dragging=false;sheet.classList.remove('dragging');
+  if(!dragging)return;
+  window.removeEventListener('pointermove',onDragMove);
+  dragging=false;sheet.classList.remove('dragging');
   const y=parseFloat(sheet.style.getPropertyValue('--y'));
   let target;
   if(vel<-0.55)target=snapIdx===0?1:2;
@@ -2211,10 +2219,12 @@ function endDrag(){
 window.addEventListener('pointerup',endDrag);window.addEventListener('pointercancel',endDrag);
 grab.addEventListener('click',e=>{
   if(!e.target.closest('button')&&Math.abs(vel)<.05&&snapIdx<2)setSnap(snapIdx+1)});
-sbody.addEventListener('pointerdown',e=>{sbody.dataset.top=sbody.scrollTop<=0?e.clientY:''});
+let pullY=null;
+sbody.addEventListener('pointerdown',e=>{pullY=sbody.scrollTop<=0?e.clientY:null},{passive:true});
 sbody.addEventListener('pointermove',e=>{
-  if(sbody.dataset.top&&e.clientY-(+sbody.dataset.top)>26&&snapIdx===2){sbody.dataset.top='';setSnap(1)}});
-sbody.addEventListener('pointerup',()=>sbody.dataset.top='');
+  if(pullY!==null&&e.clientY-pullY>26&&snapIdx===2){pullY=null;setSnap(1)}},{passive:true});
+sbody.addEventListener('pointerup',()=>{pullY=null},{passive:true});
+sbody.addEventListener('pointercancel',()=>{pullY=null},{passive:true});
 window.addEventListener('resize',()=>{measureChrome();setSnap(snapIdx)});
 
 /* ---------------- boot ---------------- */
