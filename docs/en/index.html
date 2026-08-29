@@ -9,10 +9,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="preconnect" href="https://server.arcgisonline.com">
+<link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
 <link rel="preconnect" href="https://helsinkifestival.fi">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300;8..144,400;8..144,500;8..144,600;8..144,700;8..144,800&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
 /* ============================================================
    TOKENS — Festarri M3 language, extended with a rank scale.
@@ -593,6 +595,9 @@ img{display:block;max-width:100%}
              opacity var(--dur-short3),visibility var(--dur-med4)}
 .fsheet.show{transform:none;opacity:1;visibility:visible;pointer-events:auto;
   transition:transform var(--dur-long2) var(--ease-emph-decel),opacity var(--dur-short3)}
+.fsheet.dragging{transition:none}
+.fsheet .handle{cursor:grab;touch-action:none}
+.fsheet .handle:active{cursor:grabbing}
 .fsheet h2{margin:0;padding:8px 22px 4px;font:700 19px/25px var(--font);letter-spacing:-.4px}
 .fbody{overflow-y:auto;padding:0 18px 12px;scrollbar-width:none}
 .fbody::-webkit-scrollbar{display:none}
@@ -810,6 +815,8 @@ img{display:block;max-width:100%}
 <div class="snack" id="snack" role="status"><span id="snackText"></span></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js"></script>
 <script>
 /* ============================================================
    COPY — English, Finnish, Chinese. {n} placeholders are filled in t().
@@ -1201,13 +1208,18 @@ const visible=()=>view==='plan'
 
 /* ---------------- map ---------------- */
 const ESRI_C='Tiles &copy; Esri &mdash; &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+const OFM='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &middot; <a href="https://openfreemap.org/">OpenFreeMap</a>';
 const ESRI='Imagery &copy; Esri, Maxar, Earthstar Geographics';
 const ARC=n=>`https://server.arcgisonline.com/ArcGIS/rest/services/${n}/MapServer/tile/{z}/{y}/{x}`;
 const map=L.map('map',{zoomControl:false,attributionControl:true}).setView([60.1690,24.9530],14);
 L.control.zoom({position:'topright'}).addTo(map);
 const layers={
- light:L.tileLayer(ARC('Canvas/World_Light_Gray_Base'),{maxZoom:19,attribution:ESRI_C}),
- lightref:L.tileLayer(ARC('Canvas/World_Light_Gray_Reference'),{maxZoom:19,attribution:''}),
+ /* Positron - pale land, pale water, quiet labels - from OpenFreeMap, which
+    serves it as vector tiles with no key and no watermark. CARTO's own free
+    raster tiles now print API KEY REQUIRED across the image, and hiddenhel.fi
+    gets the same style by carrying a key of its own, which is not ours to use. */
+ light:L.maplibreGL({style:'https://tiles.openfreemap.org/styles/positron',
+   attribution:OFM}),
  dark:L.tileLayer(ARC('Canvas/World_Dark_Gray_Base'),{maxZoom:19,attribution:ESRI_C}),
  darkref:L.tileLayer(ARC('Canvas/World_Dark_Gray_Reference'),{maxZoom:19,attribution:''}),
  sat:L.tileLayer(ARC('World_Imagery'),{maxZoom:19,attribution:ESRI}),
@@ -1223,7 +1235,7 @@ function applyBase(){
   Object.values(layers).forEach(l=>map.hasLayer(l)&&map.removeLayer(l));
   if(base==='sat'){layers.sat.addTo(map);layers.satlab.addTo(map)}
   else if(isDark()){layers.dark.addTo(map);layers.darkref.addTo(map)}
-  else{layers.light.addTo(map);layers.lightref.addTo(map)}
+  else layers.light.addTo(map);            /* Positron carries its own labels */
   $('#segMap').setAttribute('aria-pressed',base==='map');
   $('#segSat').setAttribute('aria-pressed',base==='sat');
   $('.maptint').style.display=base==='sat'?'none':'';
@@ -1566,7 +1578,7 @@ function renderPlan(){
   const items=buildPlan();
   $('#sheetTitle').textContent=t('myPlan');
   $('#sheetSub').textContent=items.length?t('stops',{n:items.length}):t('nothingSaved');
-  $('#backBtn').hidden=false;$('#clearPlan').hidden=!items.length;
+  $('#backBtn').hidden=true;$('#clearPlan').hidden=!items.length;
   $('#sharePlan').hidden=!items.length;
   const presets=`<div class="group-h" style="${rv(3)}"><i></i><b>${t('routes')}</b><span>${t('routesSub')}</span></div>
     <div class="presets">`+PRESETS.map((p,k)=>{
@@ -1948,7 +1960,38 @@ function openSheet(k){
   $('#fbody').innerHTML=FILTERS[k].render();
   $('#fsheet').classList.add('show');$('#scrim').classList.add('show');
 }
-function closeSheet(){$('#fsheet').classList.remove('show');$('#scrim').classList.remove('show')}
+function closeSheet(){
+  const f=$('#fsheet');
+  f.style.transform='';f.classList.remove('dragging');
+  f.classList.remove('show');$('#scrim').classList.remove('show');
+}
+/* Every sheet in the app answers to the same downward drag, so the filter panel
+   should not be the one that ignores your thumb. */
+(function(){
+  const f=$('#fsheet');let y0=null,dy=0,t0=0,v=0;
+  const grabbable=e=>!e.target.closest('button,input,a')||e.target.closest('.handle');
+  f.addEventListener('pointerdown',e=>{
+    const body=$('#fbody');
+    if(body.contains(e.target)&&body.scrollTop>0)return;   /* let it scroll first */
+    if(!grabbable(e))return;
+    y0=e.clientY;dy=0;t0=performance.now();v=0;f.classList.add('dragging');
+  });
+  f.addEventListener('pointermove',e=>{
+    if(y0===null)return;
+    const now=performance.now();
+    dy=Math.max(0,e.clientY-y0);
+    v=dy/Math.max(1,now-t0);
+    f.style.transform=`translateY(${dy}px)`;
+  });
+  const end=()=>{
+    if(y0===null)return;
+    const far=dy>90||v>0.6;
+    y0=null;f.classList.remove('dragging');
+    if(far)closeSheet();else f.style.transform='';
+  };
+  f.addEventListener('pointerup',end);
+  f.addEventListener('pointercancel',end);
+})();
 $$('[data-sheet]').forEach(p=>p.onclick=()=>openSheet(p.dataset.sheet));
 $('#langBtn').onclick=()=>openSheet('lang');
 $('#scrim').onclick=closeSheet;$('#applyBtn').onclick=closeSheet;
