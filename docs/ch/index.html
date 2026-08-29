@@ -676,6 +676,21 @@ img{display:block;max-width:100%}
   .leaflet-control-zoom{display:block}
   .leaflet-top.leaflet-right{margin-top:10px}
 }
+/* ?perf=1 only: a frame-rate readout and switches for the three most expensive
+   things on the page, so which one costs the frames can be settled on the
+   device in hand instead of inferred from a desktop. */
+.perf{position:fixed;left:8px;right:8px;top:8px;z-index:9999;padding:10px 12px;
+  border-radius:14px;background:rgba(16,18,24,.93);color:#fff;
+  font:600 12px/1.45 var(--mono);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.perf b{font-size:15px}
+.perf .sw{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.perf button{border:1px solid rgba(255,255,255,.35);background:none;color:#fff;
+  border-radius:999px;padding:5px 11px;font:600 11px var(--font)}
+.perf button[aria-pressed="true"]{background:#fff;color:#111}
+.perf .env{opacity:.62;font-size:10px;margin-top:6px;line-height:1.4}
+html.perf-nomap #map{visibility:hidden}
+html.perf-noimg .row .thumb img{display:none}
+html.perf-nocv .rows>.row{content-visibility:visible}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
   /* asking for no motion usually means the device is also glad to skip these */
@@ -2245,6 +2260,57 @@ map.whenReady(()=>setTimeout(()=>{
   if(urlPlan&&plan.length){calcSnaps();fitTo(plan.map(p=>byId[p.i]))}
 },80));
 map.on('zoomend moveend',syncMarkers);
+
+/* ---------------- ?perf=1 ---------------- */
+if(new URLSearchParams(location.search).has('perf')){
+  const box=document.createElement('div');box.className='perf';
+  box.innerHTML=`<b id="pfFps">--</b> fps · worst <span id="pfWorst">--</span> ms ·
+    <span id="pfBad">--</span>% slow frames
+    <div class="sw">
+      <button data-k="nomap" aria-pressed="false">map off</button>
+      <button data-k="noimg" aria-pressed="false">images off</button>
+      <button data-k="nocv" aria-pressed="false">no skip-layout</button>
+      <button data-k="reset" aria-pressed="false">reset</button>
+    </div>
+    <div class="env" id="pfEnv"></div>`;
+  document.body.appendChild(box);
+  const supports=(p,v)=>CSS.supports(p,v)?'yes':'NO';
+  $('#pfEnv').innerHTML=[
+    navigator.userAgent.slice(0,72),
+    'dpr '+devicePixelRatio+' · '+innerWidth+'x'+innerHeight,
+    'cores '+(navigator.hardwareConcurrency||'?')+' · ram '+(navigator.deviceMemory||'?')+'GB',
+    'content-visibility '+supports('content-visibility','auto')+
+      ' · backdrop-filter '+supports('backdrop-filter','blur(4px)'),
+    'rows <span id="pfRows">'+$$('#sbody .row').length+'</span> · pins '+$$('.mk').length
+  ].join('<br>');
+  box.addEventListener('click',ev=>{
+    const b=ev.target.closest('button');if(!b)return;
+    const k=b.dataset.k;
+    if(k==='reset'){['nomap','noimg','nocv'].forEach(x=>document.documentElement.classList.remove('perf-'+x));
+      $$('.perf button').forEach(x=>x.setAttribute('aria-pressed','false'));return}
+    const on=!document.documentElement.classList.contains('perf-'+k);
+    document.documentElement.classList.toggle('perf-'+k,on);
+    b.setAttribute('aria-pressed',String(on));
+  });
+  /* Frames are only counted while the list is actually moving; an idle page
+     reports 60 and tells us nothing. */
+  let last=performance.now(),frames=[],moving=0,shown=0;
+  $('#sbody').addEventListener('scroll',()=>{moving=performance.now()},{passive:true});
+  (function tick(now){
+    const d=now-last;last=now;
+    /* a gap of half a second is the tab being suspended, not a slow frame */
+    if(now-moving<400&&d<500){frames.push(d);if(frames.length>90)frames.shift()}
+    if(frames.length>8&&now-shown>250){
+      shown=now;
+      const avg=frames.reduce((a,b)=>a+b,0)/frames.length;
+      $('#pfFps').textContent=Math.round(1000/avg);
+      $('#pfWorst').textContent=Math.round(Math.max(...frames));
+      $('#pfBad').textContent=Math.round(frames.filter(f=>f>20).length/frames.length*100);
+      $('#pfRows').textContent=$$('#sbody .row').length;
+    }
+    requestAnimationFrame(tick);
+  })(performance.now());
+}
 </script>
 </body>
 </html>
