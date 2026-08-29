@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -195,28 +195,33 @@ img{display:block;max-width:100%}
 .mk{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .mk[data-on="0"]{display:none}
 .mk .bub{border-radius:var(--corner-full);display:grid;place-items:center;
-  box-shadow:var(--elev-2);border:2px solid var(--surface);
+  box-shadow:var(--elev-2);border:2px solid currentColor;
   transition:transform var(--dur-med2) var(--spring)}
 .mk .bub svg{width:60%;height:60%}
-.mk .stem{width:2px;background:var(--surface);box-shadow:var(--elev-1)}
-.mk-r3 .bub{width:38px;height:38px;background:var(--r3);color:#fff}
+.mk .stem{width:2px;background:currentColor;opacity:.85}
+.mk-r3{color:var(--r3)}
+.mk-r3 .bub{width:38px;height:38px;background:var(--r3-bg)}
 .mk-r3 .stem{height:9px}
-.mk-r2 .bub{width:29px;height:29px;background:var(--r2);color:var(--surface)}
+.mk-r2{color:var(--r2)}
+.mk-r2 .bub{width:29px;height:29px;background:var(--r2-bg)}
 .mk-r2 .stem{height:7px}
-.mk-r1 .bub{width:22px;height:22px;background:var(--r1);color:var(--surface)}
+.mk-r1{color:var(--r1)}
+.mk-r1 .bub{width:22px;height:22px;background:var(--r1-bg)}
 .mk-r1 .stem{height:6px}
-.mk-r0 .bub{width:12px;height:12px;border-width:1.5px;background:var(--r0);opacity:.7}
+.mk-r0{color:var(--r0)}
+.mk-r0 .bub{width:13px;height:13px;border-width:2px;background:var(--r0-bg)}
 .mk-r0 .bub svg,.mk-r0 .stem{display:none}
 .mk .lab{margin-bottom:3px;order:-1;max-width:160px;padding:2px 7px;border-radius:var(--corner-s);
-  background:var(--surface);box-shadow:var(--elev-1);
+  background:var(--surface);box-shadow:var(--elev-1);border:1px solid currentColor;
   color:var(--on-surface);font:700 10px/14px var(--font);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mk-r1 .lab,.mk-r0 .lab{display:none}
 #map:not([data-close="1"]) .mk-r2 .lab{display:none}
 /* In the plan: the pin takes the plan's own colour and wears its stop number,
    so the route reads as 1 → 2 → 3 without opening anything. */
-.mk.in-plan .bub{background:var(--primary);color:var(--on-primary);
-  box-shadow:var(--elev-2),0 0 0 3px var(--primary-container)}
+.mk.in-plan{color:var(--primary)}
+.mk.in-plan .bub{background:var(--primary-container);
+  box-shadow:var(--elev-2),0 0 0 3px var(--surface)}
 .mk.in-plan .bub svg{display:none}
 .mk.in-plan .bub::after{content:attr(data-n);font:800 12px/1 var(--mono)}
 .mk-r0.in-plan .bub{opacity:1}
@@ -674,6 +679,12 @@ img{display:block;max-width:100%}
   </symbol>
   <symbol id="i-petal" viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 10L9.721 5.852A2.6 2.6 0 1 1 14.279 5.852Z"/></symbol>
+  <!-- Three of the six, the top half of the ring: Festarri's "interested" cut.
+       A partial bloom is exactly what a highlight is - picked out, not saved. -->
+  <symbol id="i-interested" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M10.268 11L5.536 10.899A2.6 2.6 0 1 1 7.815 6.952Z"/>
+    <path d="M12 10L9.721 5.852A2.6 2.6 0 1 1 14.279 5.852Z"/>
+    <path d="M13.732 11L16.185 6.952A2.6 2.6 0 1 1 18.464 10.899Z"/></symbol>
   <symbol id="i-door" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M14.5 3.5H6.5v17h8"/><path d="M14.5 3.5l4 1.6v13.8l-4 1.6z"/><path d="M12 12h.01"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><path d="M12 21.5s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10.4" r="2.5"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
@@ -779,7 +790,7 @@ img{display:block;max-width:100%}
     <button class="nav-item" role="tab" aria-selected="true" data-tab="all">
       <span class="nav-ind"><svg><use href="#i-list"/></svg></span><span id="navAll">All events</span></button>
     <button class="nav-item" role="tab" aria-selected="false" data-tab="top">
-      <span class="nav-ind"><svg><use href="#i-petal"/></svg></span><span id="navTop">Highlights</span></button>
+      <span class="nav-ind"><svg><use href="#i-interested"/></svg></span><span id="navTop">Highlights</span></button>
     <button class="nav-item" role="tab" aria-selected="false" data-tab="plan">
       <span class="nav-ind"><svg><use href="#i-bloom-o"/></svg><span class="badge" id="planN" hidden>0</span></span><span id="navPlan">My plan</span></button>
   </nav>
@@ -1056,15 +1067,6 @@ function langFromURL(){
   if(seg&&LANG_ALIAS[seg.toLowerCase()])return LANG_ALIAS[seg.toLowerCase()];
   return null;
 }
-function langFromBrowser(){
-  for(const l of (navigator.languages||[navigator.language||''])){
-    const k=String(l).toLowerCase();
-    if(LANG_ALIAS[k])return LANG_ALIAS[k];
-    const base=k.split('-')[0];
-    if(LANG_ALIAS[base])return LANG_ALIAS[base];
-  }
-  return null;
-}
 function planFromURL(){
   const q=new URLSearchParams(location.search).get('plan');
   if(!q)return null;
@@ -1140,8 +1142,11 @@ try{
   plan=raw.map(v=>typeof v==='string'?{i:v,at:(byId[v]||{}).s}:v)
           .filter(p=>p&&byId[p.i]).map(p=>({i:p.i,at:+p.at||byId[p.i].s}));
 }catch(e){plan=[]}
+/* A link's language wins, then whatever the reader last chose here, then
+   English. Browser language is deliberately not consulted: the default has to
+   be predictable for whoever you hand the plain link to. */
 lang=langFromURL()||(()=>{try{const L=localStorage.getItem('ty26lang');if(STR[L])return L}catch(e){}return null})()
-     ||langFromBrowser()||'en';
+     ||'en';
 const savePlan=()=>{
   try{localStorage.setItem('ty26plan',JSON.stringify(plan))}catch(e){}
   if(typeof syncURL==='function')syncURL();
