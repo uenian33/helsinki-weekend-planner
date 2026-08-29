@@ -16,8 +16,8 @@ DAY = '2026-08-29'
 
 CURATED = [
  # ---- afternoon, still catchable ----
- ('00:00','23:59','Sompafest','Sompafest','Sompasauna','free',3,['out','free'],
-  'Volunteer-run public sauna on the Mustikkamaa shore, free and open around the clock; bring your own firewood and swimwear is optional. Ten minutes on foot from MustikkaFest.'),
+ ('16:00','22:00','Sompafest','Sompafest','Sompasauna','free',3,['out','free'],
+  'Ohms 16:00 · Musta Koira 16:55 · Josei & Benji 17:50 · Ign°ra 18:45 · Elia Sonder 19:25 · Himanen 20:20 · Pändikollektiivi 21:15, and Cherilee reading spoken word alongside. At the sauna on the Mustikkamaa shore; the sauna itself stays open around the clock.'),
  ('14:00','20:00','MustikkaFest','MustikkaFest','Mustikkamaa','free',3,['out','free'],
   'Katve 15:00 · Sound Sisters 15:30 · Duo Henriksson/Virtanen 16:00 · Kaarlo Soudunsaari 17:00 · Freeta Freeta 18:00 · Lyyti 19:00, with workshops running alongside. On the Mustikkamaa shore, ten minutes from Sompasauna.'),
  ('14:00','16:00','Finnish Nature Day','Suomen luonnon päivä','Hallainvuori','free',2,['out','free'],
@@ -116,7 +116,7 @@ CURATED = [
 
 # The same notes in the other two languages, keyed by the English title.
 NOTES_FI = {
-    'Sompafest': 'Vapaaehtoisvoimin pyörivä yleinen sauna Mustikkamaan rannassa, ilmainen ja auki ympäri vuorokauden; puut tuodaan itse ja uima-asu on vapaaehtoinen. Kymmenen minuutin kävely MustikkaFestiltä.',
+    'Sompafest': 'Ohms 16:00 · Musta Koira 16:55 · Josei & Benji 17:50 · Ign°ra 18:45 · Elia Sonder 19:25 · Himanen 20:20 · Pändikollektiivi 21:15, ja Cherilee lausumassa runoja siinä ohessa. Saunalla Mustikkamaan rannassa; itse sauna on auki ympäri vuorokauden.',
  'MustikkaFest': 'Katve 15:00 · Sound Sisters 15:30 · Duo Henriksson/Virtanen 16:00 · Kaarlo Soudunsaari 17:00 · Freeta Freeta 18:00 · Lyyti 19:00, ja työpajat pyörivät koko ajan rinnalla.',
  'Finnish Nature Day': 'Pekko Käppi soittaa metsäkonsertin klo 15.',
  "Animals' Holiday Parade & Concert": 'Jazzkulkue jättimäisillä eläinnukeilla, ja sen jälkeen perhekonsertti.',
@@ -145,7 +145,7 @@ NOTES_FI = {
 }
 
 NOTES_ZH = {
-    'Sompafest': '志愿者运营的公共桑拿，就在 Mustikkamaa 岸边，免费、全天开放；柴火自备，泳衣随意。从 MustikkaFest 步行十分钟。',
+    'Sompafest': '16:00 Ohms · 16:55 Musta Koira · 17:50 Josei & Benji · 18:45 Ign°ra · 19:25 Elia Sonder · 20:20 Himanen · 21:15 Pändikollektiivi，另有 Cherilee 的口语诗表演。在 Mustikkamaa 岸边的桑拿旁；桑拿本身全天开放。',
  'MustikkaFest': '15:00 Katve · 15:30 Sound Sisters · 16:00 Duo Henriksson/Virtanen · 17:00 Kaarlo Soudunsaari · 18:00 Freeta Freeta · 19:00 Lyyti，工作坊全程同时进行。',
  'Finnish Nature Day': '15:00 Pekko Käppi 的森林音乐会。',
  "Animals' Holiday Parade & Concert": '爵士游行加巨型动物木偶，之后是家庭音乐会。',
