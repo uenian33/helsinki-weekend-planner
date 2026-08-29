@@ -82,11 +82,15 @@ than as an object literal, which is meaningfully faster on a phone.
 | `docs/` | what GitHub Pages serves |
 | `raw/` | API responses and the place cache |
 
-Built in Festarri's design language, repainted in nine given pastels — lavender
-mist, linen, soft blush, petal frost, mint cream, light blue, parchment,
-lavender, periwinkle. None of the nine can carry text, so each is used as a
-ground or a fill and paired with an ink deepened from its own hue; the rank
-scale is petal frost, light blue and linen, and periwinkle is the app's own
-voice. Collapsed, the sheet leaves a handle and one line and the map takes 85%
-of the screen, which is the proportion Google Maps settled on for the same
-reason.
+Built in Festarri's design language, repainted in five given colours — blush pop
+#FFB8D1, soft blossom #E4B4C2, thistle #E7CEE3, ghost white #E0E1E9, light cyan
+#DDFDFE. Blush pop is the most saturated of the five and light cyan is furthest
+from it in hue, so those two carry the top two ranks and stay apart at a glance;
+thistle takes the third and ghost white the rest. None of the five can carry
+text, so each is a ground or a fill paired with an ink deepened from its own hue
+until every pair clears 4.5:1 — the badges are 10px bold, which is small text,
+and the first pass at those inks did not. Two category fills are derived from
+the family, because five colours do not cover seven categories.
+
+Collapsed, the sheet leaves a handle and one line and the map takes 85% of the
+screen, which is the proportion Google Maps settled on for the same reason.

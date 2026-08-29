@@ -34,83 +34,85 @@
   --elev-3:0 -4px 24px 4px rgba(41,28,67,.14),0 2px 4px rgba(41,28,67,.10);
   --tl-h:118px;
 
-  /* Built from nine given pastels: lavender mist #EAE4E9, linen #FFF1E6,
-     soft blush #FDE2E4, petal frost #FAD2E1, mint cream #E2ECE9, light blue
-     #BEE1E6, parchment #F0EFEB, lavender #DFE7FD, periwinkle #CDDAFD.
-     None of the nine can carry text, so each is used as a ground or a fill and
-     paired with an ink deepened from its own hue. The rank scale is petal
-     frost, light blue and linen; periwinkle is the app's own voice. */
-  --primary:#4A5DA8;--on-primary:#FFFFFF;
-  --primary-container:#CDDAFD;--on-primary-container:#1B2A55;
-  --surface:#FFFFFF;--on-surface:#2E2B31;
-  --surface-container-low:#FBFAF8;--surface-container:#F5F4F0;
-  --surface-container-high:#F0EFEB;--surface-container-highest:#EAE4E9;
-  --on-surface-variant:#605B64;
-  --outline:#9A939C;--outline-variant:#E6E2E4;
-  --inverse-surface:#2E2B31;--inverse-on-surface:#F5F4F0;--inverse-primary:#CDDAFD;
-  --scrim:#241F26;
+  /* Built from five given colours: blush pop #FFB8D1, soft blossom #E4B4C2,
+     thistle #E7CEE3, ghost white #E0E1E9, light cyan #DDFDFE.
+     Blush pop is the most saturated of the five and light cyan is the furthest
+     from it in hue, so those two carry the top two ranks and stay apart at a
+     glance; thistle takes the third and ghost white the rest. Each pastel is a
+     ground or a fill only — none can carry text — and is paired with an ink
+     deepened from its own hue. Two category fills are derived from the family
+     where five colours could not cover seven. */
+  --primary:#4A5170;--on-primary:#FFFFFF;
+  --primary-container:#E0E1E9;--on-primary-container:#232842;
+  --surface:#FFFFFF;--on-surface:#24262F;
+  --surface-container-low:#FBFBFC;--surface-container:#F4F5F8;
+  --surface-container-high:#ECEDF2;--surface-container-highest:#E0E1E9;
+  --on-surface-variant:#585B68;
+  --outline:#9295A4;--outline-variant:#E4E5EC;
+  --inverse-surface:#24262F;--inverse-on-surface:#F4F5F8;--inverse-primary:#BFC6E4;
+  --scrim:#1B1D25;
   --glass:rgba(255,255,255,.92);
-  --c-visual-bg:#DFE7FD;--c-visual-ink:#42539B;
-  --c-music-bg:#FAD2E1;--c-music-ink:#A83E6B;
-  --c-dance-bg:#BEE1E6;--c-dance-ink:#26636F;
-  --c-part-bg:#E2ECE9;--c-part-ink:#3A6B5C;
-  --c-lit-bg:#FFF1E6;--c-lit-ink:#8A6134;
-  --c-theatre-bg:#FDE2E4;--c-theatre-ink:#A24A52;
-  --c-film-bg:#CDDAFD;--c-film-ink:#3F51A8;
-  --r3:#B3406A;--r3-bg:#FAD2E1;
-  --r2:#2E6E77;--r2-bg:#BEE1E6;
-  --r1:#8A6134;--r1-bg:#FFF1E6;
-  --r0:#8C8791;--r0-bg:#EAE4E9;
-  --warn-bg:#FFF1E6;--warn-ink:#8A6134;
-  --tiles:none;--map-tint:rgba(46,43,49,0);
+  --c-visual-bg:#E7CEE3;--c-visual-ink:#704D76;
+  --c-music-bg:#FFB8D1;--c-music-ink:#992753;
+  --c-dance-bg:#DDFDFE;--c-dance-ink:#1B6B72;
+  --c-part-bg:#D8F0E6;--c-part-ink:#2E6B57;
+  --c-lit-bg:#E4B4C2;--c-lit-ink:#7A384B;
+  --c-theatre-bg:#F5D9CE;--c-theatre-ink:#8B513D;
+  --c-film-bg:#E0E1E9;--c-film-ink:#4A5170;
+  --r3:#992753;--r3-bg:#FFB8D1;
+  --r2:#1B6B72;--r2-bg:#DDFDFE;
+  --r1:#704D76;--r1-bg:#E7CEE3;
+  --r0:#5F626E;--r0-bg:#E0E1E9;
+  --warn-bg:#F5D9CE;--warn-ink:#8B513D;
+  --tiles:none;--map-tint:rgba(36,38,47,0);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --primary:#CDDAFD;--on-primary:#1B2A55;
-  --primary-container:#35406E;--on-primary-container:#DFE7FD;
-  --surface:#1B1A1E;--on-surface:#EDE9EC;
-  --surface-container-low:#211F25;--surface-container:#27242B;
-  --surface-container-high:#2F2B33;--surface-container-highest:#38333C;
-  --on-surface-variant:#C6BFC7;
-  --outline:#9A939C;--outline-variant:#3B363F;
-  --inverse-surface:#EDE9EC;--inverse-on-surface:#27242B;--inverse-primary:#4A5DA8;
-  --scrim:#000000;--glass:rgba(27,26,30,.88);
-  --c-visual-bg:#2C3556;--c-visual-ink:#DFE7FD;
-  --c-music-bg:#4A2233;--c-music-ink:#FAD2E1;
-  --c-dance-bg:#1E3F45;--c-dance-ink:#BEE1E6;
-  --c-part-bg:#233B33;--c-part-ink:#E2ECE9;
-  --c-lit-bg:#40342A;--c-lit-ink:#FFF1E6;
-  --c-theatre-bg:#452328;--c-theatre-ink:#FDE2E4;
-  --c-film-bg:#262F52;--c-film-ink:#CDDAFD;
-  --r3:#F7B3CC;--r3-bg:#4A2233;
-  --r2:#A8D4DC;--r2-bg:#1E3F45;
-  --r1:#E9CDB4;--r1-bg:#40342A;
-  --r0:#9A939C;--r0-bg:#302B33;
-  --warn-bg:#40342A;--warn-ink:#FFF1E6;
-  --tiles:none;--map-tint:rgba(27,26,30,.18);
+  --primary:#BFC6E4;--on-primary:#262C46;
+  --primary-container:#3A4160;--on-primary-container:#E0E1E9;
+  --surface:#17181E;--on-surface:#E8E9EF;
+  --surface-container-low:#1C1E25;--surface-container:#22242C;
+  --surface-container-high:#292C35;--surface-container-highest:#32353F;
+  --on-surface-variant:#C0C2CE;
+  --outline:#9295A4;--outline-variant:#353843;
+  --inverse-surface:#E8E9EF;--inverse-on-surface:#22242C;--inverse-primary:#4A5170;
+  --scrim:#000000;--glass:rgba(23,24,30,.88);
+  --c-visual-bg:#3A2A3A;--c-visual-ink:#E7CEE3;
+  --c-music-bg:#4A2032;--c-music-ink:#FFB8D1;
+  --c-dance-bg:#14383C;--c-dance-ink:#DDFDFE;
+  --c-part-bg:#1E3D33;--c-part-ink:#D8F0E6;
+  --c-lit-bg:#432630;--c-lit-ink:#E4B4C2;
+  --c-theatre-bg:#432F26;--c-theatre-ink:#F5D9CE;
+  --c-film-bg:#2C3048;--c-film-ink:#E0E1E9;
+  --r3:#FFB8D1;--r3-bg:#4A2032;
+  --r2:#9FE9EC;--r2-bg:#14383C;
+  --r1:#E7CEE3;--r1-bg:#3A2A3A;
+  --r0:#9598A6;--r0-bg:#2B2E37;
+  --warn-bg:#432F26;--warn-ink:#F5D9CE;
+  --tiles:none;--map-tint:rgba(23,24,30,.18);
 }}
 :root[data-theme="dark"]{
-  --primary:#CDDAFD;--on-primary:#1B2A55;
-  --primary-container:#35406E;--on-primary-container:#DFE7FD;
-  --surface:#1B1A1E;--on-surface:#EDE9EC;
-  --surface-container-low:#211F25;--surface-container:#27242B;
-  --surface-container-high:#2F2B33;--surface-container-highest:#38333C;
-  --on-surface-variant:#C6BFC7;
-  --outline:#9A939C;--outline-variant:#3B363F;
-  --inverse-surface:#EDE9EC;--inverse-on-surface:#27242B;--inverse-primary:#4A5DA8;
-  --scrim:#000000;--glass:rgba(27,26,30,.88);
-  --c-visual-bg:#2C3556;--c-visual-ink:#DFE7FD;
-  --c-music-bg:#4A2233;--c-music-ink:#FAD2E1;
-  --c-dance-bg:#1E3F45;--c-dance-ink:#BEE1E6;
-  --c-part-bg:#233B33;--c-part-ink:#E2ECE9;
-  --c-lit-bg:#40342A;--c-lit-ink:#FFF1E6;
-  --c-theatre-bg:#452328;--c-theatre-ink:#FDE2E4;
-  --c-film-bg:#262F52;--c-film-ink:#CDDAFD;
-  --r3:#F7B3CC;--r3-bg:#4A2233;
-  --r2:#A8D4DC;--r2-bg:#1E3F45;
-  --r1:#E9CDB4;--r1-bg:#40342A;
-  --r0:#9A939C;--r0-bg:#302B33;
-  --warn-bg:#40342A;--warn-ink:#FFF1E6;
-  --tiles:none;--map-tint:rgba(27,26,30,.18);
+  --primary:#BFC6E4;--on-primary:#262C46;
+  --primary-container:#3A4160;--on-primary-container:#E0E1E9;
+  --surface:#17181E;--on-surface:#E8E9EF;
+  --surface-container-low:#1C1E25;--surface-container:#22242C;
+  --surface-container-high:#292C35;--surface-container-highest:#32353F;
+  --on-surface-variant:#C0C2CE;
+  --outline:#9295A4;--outline-variant:#353843;
+  --inverse-surface:#E8E9EF;--inverse-on-surface:#22242C;--inverse-primary:#4A5170;
+  --scrim:#000000;--glass:rgba(23,24,30,.88);
+  --c-visual-bg:#3A2A3A;--c-visual-ink:#E7CEE3;
+  --c-music-bg:#4A2032;--c-music-ink:#FFB8D1;
+  --c-dance-bg:#14383C;--c-dance-ink:#DDFDFE;
+  --c-part-bg:#1E3D33;--c-part-ink:#D8F0E6;
+  --c-lit-bg:#432630;--c-lit-ink:#E4B4C2;
+  --c-theatre-bg:#432F26;--c-theatre-ink:#F5D9CE;
+  --c-film-bg:#2C3048;--c-film-ink:#E0E1E9;
+  --r3:#FFB8D1;--r3-bg:#4A2032;
+  --r2:#9FE9EC;--r2-bg:#14383C;
+  --r1:#E7CEE3;--r1-bg:#3A2A3A;
+  --r0:#9598A6;--r0-bg:#2B2E37;
+  --warn-bg:#432F26;--warn-ink:#F5D9CE;
+  --tiles:none;--map-tint:rgba(23,24,30,.18);
 }
 
 *{box-sizing:border-box}
