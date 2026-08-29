@@ -1206,8 +1206,7 @@ const ARC=n=>`https://server.arcgisonline.com/ArcGIS/rest/services/${n}/MapServe
 const map=L.map('map',{zoomControl:false,attributionControl:true}).setView([60.1690,24.9530],14);
 L.control.zoom({position:'topright'}).addTo(map);
 const layers={
- light:L.tileLayer(ARC('Canvas/World_Light_Gray_Base'),{maxZoom:19,attribution:ESRI_C}),
- lightref:L.tileLayer(ARC('Canvas/World_Light_Gray_Reference'),{maxZoom:19,attribution:''}),
+ light:L.tileLayer(ARC('World_Street_Map'),{maxZoom:19,attribution:ESRI_C}),
  dark:L.tileLayer(ARC('Canvas/World_Dark_Gray_Base'),{maxZoom:19,attribution:ESRI_C}),
  darkref:L.tileLayer(ARC('Canvas/World_Dark_Gray_Reference'),{maxZoom:19,attribution:''}),
  sat:L.tileLayer(ARC('World_Imagery'),{maxZoom:19,attribution:ESRI}),
@@ -1223,7 +1222,7 @@ function applyBase(){
   Object.values(layers).forEach(l=>map.hasLayer(l)&&map.removeLayer(l));
   if(base==='sat'){layers.sat.addTo(map);layers.satlab.addTo(map)}
   else if(isDark()){layers.dark.addTo(map);layers.darkref.addTo(map)}
-  else{layers.light.addTo(map);layers.lightref.addTo(map)}
+  else layers.light.addTo(map);            /* the street map carries its own labels */
   $('#segMap').setAttribute('aria-pressed',base==='map');
   $('#segSat').setAttribute('aria-pressed',base==='sat');
   $('.maptint').style.display=base==='sat'?'none':'';
@@ -1245,7 +1244,7 @@ EV.forEach(e=>{
 function markerHTML(e){
   return `<span class="mk mk-r${e.r}">
     ${e.r>=2?'<span class="lab">'+esc(title(e).slice(0,36))+'</span>':''}
-    <span class="bub">${e.r>0?'<svg><use href="#'+(e.r===3?'i-petal':'i-pin')+'"/></svg>':''}</span>
+    <span class="bub">${e.r>0?'<svg><use href="#'+(e.r>=2?'i-interested':'i-pin')+'"/></svg>':''}</span>
     <span class="stem"></span></span>`;
 }
 const planLayer=L.layerGroup().addTo(map);
@@ -1456,7 +1455,7 @@ function rowHTML(e){
   if(e.io==='out'&&rain>=50)b.push(`<span class="bdg rain">${t('outBadge',{p:rain})}</span>`);
   return `<div class="row ${sel===e.i?'sel':''}" role="button" tabindex="0" data-i="${e.i}" style="${cv(e.c)};${rv(e.r)}">
     <span class="thumb">
-      <svg class="ph"><use href="#${e.ex?'i-pin':e.r===3?'i-petal':'i-clock'}"/></svg>
+      <svg class="ph"><use href="#${e.ex?'i-pin':e.r>=2?'i-interested':'i-clock'}"/></svg>
       ${e.img?`<img src="${esc(e.img)}" alt="" loading="lazy" decoding="async"
            onerror="this.remove()">`:''}
       <span class="rkb" data-r="${e.r}">${e.r===3?'<svg><use href="#i-petal"/></svg>':''}R${e.r}</span>
@@ -1627,7 +1626,7 @@ function openDetail(id,fromMap,keepScroll){
   $('#backBtn').hidden=false;$('#clearPlan').hidden=true;
   $('#sbody').innerHTML=`<div style="${cv(e.c)};${rv(e.r)}">
     <div class="dhero">
-      <svg class="ph"><use href="#${e.ex?'i-pin':e.r===3?'i-petal':'i-clock'}"/></svg>
+      <svg class="ph"><use href="#${e.ex?'i-pin':e.r>=2?'i-interested':'i-clock'}"/></svg>
       ${e.img?`<img src="${esc(e.img)}" alt="" onerror="this.remove()">`:''}
       <span class="grad"></span>
       ${e.vp?`<span class="vpnote">${t('venuePhoto')}</span>`:''}
@@ -1640,7 +1639,7 @@ function openDetail(id,fromMap,keepScroll){
     ${alt?`<p class="dalt">${t('alsoCalled')}: ${esc(alt)}</p>`:''}
     ${(e.op||e.rr)?`<div class="dflags">
       ${e.op?`<span class="dflag door"><svg><use href="#i-door"/></svg>${t('openDoors')}</span>`:''}
-      ${e.rr?`<span class="dflag rare"><svg><use href="#i-petal"/></svg>${t('rareLong')}</span>`:''}
+      ${e.rr?`<span class="dflag rare"><svg><use href="#i-interested"/></svg>${t('rareLong')}</span>`:''}
     </div>`:''}
     <p class="dmeta"><svg><use href="#i-clock"/></svg><b>${esc(e.tl)}</b></p>
     <p class="dmeta"><svg><use href="#i-pin"/></svg><span>${esc(venue(e))}${e.a?'<br>'+esc(e.a):''}${
@@ -1657,7 +1656,7 @@ function openDetail(id,fromMap,keepScroll){
       ${e.op?`<div class="info"><span class="ic" style="background:var(--c-part-bg);color:var(--c-part-ink)">
         <svg><use href="#i-door"/></svg></span><span class="tx"><b>${t('openDoors')}</b><span>${t('openDoorsSub')}</span></span></div>`:''}
       ${e.rr?`<div class="info"><span class="ic" style="background:var(--c-visual-bg);color:var(--c-visual-ink)">
-        <svg><use href="#i-petal"/></svg></span><span class="tx"><b>${t('rareLong')}</b><span>${t('rareSub')}</span></span></div>`:''}
+        <svg><use href="#i-interested"/></svg></span><span class="tx"><b>${t('rareLong')}</b><span>${t('rareSub')}</span></span></div>`:''}
     </div>`:''}
     ${warn.length?`<div class="dsec"><h3>${t('before')}</h3>${warn.map(x=>
       `<div class="info"><span class="ic"><svg><use href="#${x[0]}"/></svg></span>
@@ -1904,7 +1903,7 @@ const FILTERS={
       <span class="ck"><svg><use href="#i-check"/></svg></span><i></i>${t('rankPill')[v]}</button>`).join('')}</div>
     <h3>${t('rankWhat')}</h3>${[3,2,1].map(r=>
       `<div class="info"><span class="ic" style="background:var(--r${r}-bg);color:var(--r${r})">
-        <svg><use href="#${r===3?'i-petal':'i-pin'}"/></svg></span>
+        <svg><use href="#${r>=2?'i-interested':'i-pin'}"/></svg></span>
         <span class="tx"><b>R${r} · ${t('rankGroup')[r]}</b><span>${t('rankWhy')[r]}</span></span></div>`).join('')}`},
   type:{title:()=>t('typeQ'),render:()=>`<h3>${t('showOnly')}</h3><div class="wrap">${
     Object.keys(CATV).map(c=>`<button class="opt" data-cat="${c}" aria-pressed="${cats.has(c)}" style="${cv(c)};--sw:var(--cat-ink)">
