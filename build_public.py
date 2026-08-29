@@ -52,8 +52,13 @@ def main():
     docs = os.path.join(ROOT, 'docs')
     os.makedirs(docs, exist_ok=True)
     written = []
-    for path, html in [(os.path.join(docs, 'index.html'), page)] + [
-            (os.path.join(docs, d, 'index.html'), page) for d in LANG_DIRS]:
+    def rebase(html, prefix):
+        return html.replace("const THUMB_BASE='docs/thumbs/';",
+                            "const THUMB_BASE='%s';" % prefix, 1)
+
+    for path, html in [(os.path.join(docs, 'index.html'), rebase(page, 'thumbs/'))] + [
+            (os.path.join(docs, d, 'index.html'), rebase(page, '../thumbs/'))
+            for d in LANG_DIRS]:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         open(path, 'w').write(html)
         written.append(os.path.relpath(path, ROOT))

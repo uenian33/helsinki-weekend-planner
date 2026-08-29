@@ -397,9 +397,16 @@ def main():
         hit = PHOTOS.get(r['te'])
         if hit:
             r['img'], r['cr'], r['vp'] = hit[0], hit[1], 0
+    # The row paints its picture at 66px; build_thumbs.py has written a 160px
+    # copy of each one, and that is what the list loads.
+    try:
+        thumbs = json.load(open(os.path.join(ROOT, 'raw', 'thumbs.json')))
+    except Exception:
+        thumbs = {}
     for r in out:
         r.setdefault('vp', 0)
         r.setdefault('cr', '')
+        r['th'] = thumbs.get(r['img'], '') if r.get('img') else ''
     print(f'photographs: {sum(1 for o in out if o["img"])} of {len(out)}'
           f' ({filled} matched to an API entry, {vfilled} venue photographs)')
 
