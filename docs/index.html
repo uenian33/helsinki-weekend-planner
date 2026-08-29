@@ -390,14 +390,19 @@ img{display:block;max-width:100%}
 /* The whole programme is 423 rows. Off-screen ones are skipped for layout and
    paint entirely; the remembered height keeps the scrollbar and any restored
    scroll position honest. One animation on the panel replaced 423 on the rows. */
-.rows>.row{content-visibility:auto;contain-intrinsic-size:auto 97px}
+/* Every part of a row is already fixed or clamped -- 66px picture, two lines of
+   title, one line each of time, place and badges -- so the row is given that
+   height outright. Then the size below is exact by construction rather than by
+   guess, and the scroll height cannot change under the finger as rows
+   materialise, which is what was dropping frames on a fling. */
+.rows>.row{content-visibility:auto;contain-intrinsic-size:auto 116px;height:116px}
 .row:active{transform:scale(.985)}
 .row.sel{box-shadow:inset 0 0 0 2px var(--primary)}
 .row .thumb{position:relative;width:66px;height:66px;flex:0 0 66px;border-radius:var(--corner-m);
-  overflow:hidden;background:var(--cat-bg);display:grid;place-items:center}
+  background:var(--cat-bg);display:grid;place-items:center}
 .thumb .ph{width:26px;height:26px;color:var(--cat-ink);opacity:.55}
 .row .thumb img{position:absolute;inset:0}
-.row .thumb img{width:100%;height:100%;object-fit:cover}
+.row .thumb img{width:100%;height:100%;object-fit:cover;border-radius:var(--corner-m)}
 .row .thumb .rkb{position:absolute;left:4px;top:4px;height:17px;padding:0 5px;border-radius:5px;
   background:var(--rk-ink);color:var(--surface);font:800 10px/17px var(--mono);
   display:inline-flex;align-items:center;gap:3px}
@@ -405,7 +410,7 @@ img{display:block;max-width:100%}
 .row .thumb .rkb[data-r="0"]{display:none}
 .row .txt{flex:1;min-width:0}
 .row .txt b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  font:700 15px/19px var(--font);letter-spacing:-.15px}
+  font:700 15px/19px var(--font);letter-spacing:-.15px;min-height:38px}
 .row .txt .when{margin:3px 0 0;font:600 13px/17px var(--mono)}
 .row .txt .where{margin:2px 0 0;display:flex;align-items:center;gap:6px;
   color:var(--on-surface-variant);font:400 13px/17px var(--font);
@@ -420,7 +425,10 @@ img{display:block;max-width:100%}
 .row .fav[aria-pressed="true"]{background:var(--cat-ink);color:var(--surface)}
 .row .fav[aria-pressed="true"] .f{display:block}
 .row .fav[aria-pressed="true"] .o{display:none}
-.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.badges{display:flex;flex-wrap:nowrap;gap:4px;margin-top:5px;height:18px;overflow:hidden;
+  -webkit-mask:linear-gradient(to right,#000 calc(100% - 14px),#0000);
+  mask:linear-gradient(to right,#000 calc(100% - 14px),#0000)}
+.badges:empty{-webkit-mask:none;mask:none}
 .bdg{padding:2px 7px;border-radius:var(--corner-xs);font:700 10px/14px var(--font);letter-spacing:.3px}
 .bdg.warn{background:var(--warn-bg);color:var(--warn-ink)}
 .bdg.rain{background:var(--c-dance-bg);color:var(--c-dance-ink)}
