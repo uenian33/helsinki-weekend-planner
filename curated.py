@@ -16,7 +16,7 @@ DAY = '2026-08-29'
 
 CURATED = [
  # ---- afternoon, still catchable ----
- ('00:00','23:59','Sompasauna','Sompasauna','Sompasauna','free',3,['out','free'],
+ ('00:00','23:59','Sompafest','Sompafest','Sompasauna','free',3,['out','free'],
   'Volunteer-run public sauna on the Mustikkamaa shore, free and open around the clock; bring your own firewood and swimwear is optional. Ten minutes on foot from MustikkaFest.'),
  ('14:00','20:00','MustikkaFest','MustikkaFest','Mustikkamaa','free',3,['out','free'],
   'Katve 15:00 · Sound Sisters 15:30 · Duo Henriksson/Virtanen 16:00 · Kaarlo Soudunsaari 17:00 · Freeta Freeta 18:00 · Lyyti 19:00, with workshops running alongside. On the Mustikkamaa shore, ten minutes from Sompasauna.'),
@@ -116,6 +116,7 @@ CURATED = [
 
 # The same notes in the other two languages, keyed by the English title.
 NOTES_FI = {
+    'Sompafest': 'Vapaaehtoisvoimin pyörivä yleinen sauna Mustikkamaan rannassa, ilmainen ja auki ympäri vuorokauden; puut tuodaan itse ja uima-asu on vapaaehtoinen. Kymmenen minuutin kävely MustikkaFestiltä.',
  'MustikkaFest': 'Katve 15:00 · Sound Sisters 15:30 · Duo Henriksson/Virtanen 16:00 · Kaarlo Soudunsaari 17:00 · Freeta Freeta 18:00 · Lyyti 19:00, ja työpajat pyörivät koko ajan rinnalla.',
  'Finnish Nature Day': 'Pekko Käppi soittaa metsäkonsertin klo 15.',
  "Animals' Holiday Parade & Concert": 'Jazzkulkue jättimäisillä eläinnukeilla, ja sen jälkeen perhekonsertti.',
@@ -144,6 +145,7 @@ NOTES_FI = {
 }
 
 NOTES_ZH = {
+    'Sompafest': '志愿者运营的公共桑拿，就在 Mustikkamaa 岸边，免费、全天开放；柴火自备，泳衣随意。从 MustikkaFest 步行十分钟。',
  'MustikkaFest': '15:00 Katve · 15:30 Sound Sisters · 16:00 Duo Henriksson/Virtanen · 17:00 Kaarlo Soudunsaari · 18:00 Freeta Freeta · 19:00 Lyyti，工作坊全程同时进行。',
  'Finnish Nature Day': '15:00 Pekko Käppi 的森林音乐会。',
  "Animals' Holiday Parade & Concert": '爵士游行加巨型动物木偶，之后是家庭音乐会。',
@@ -177,7 +179,7 @@ NOTES_ZH = {
 # these come from Wikimedia Commons, which is freely licensed and stable. The
 # credit is shown on the picture, which is what the licence asks for.
 PHOTOS = {
-    'Sompasauna': (
+    'Sompafest': (
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/'
         'Sompasauna._%2853959712332%29.jpg/1280px-Sompasauna._%2853959712332%29.jpg',
         'theowoo · CC BY-SA 2.0'),
@@ -185,7 +187,7 @@ PHOTOS = {
 
 # Anything not here gets no "official listing" button rather than a dead one.
 LINKS = {
-    'Sompasauna':'https://www.instagram.com/sompasauna/',
+    'Sompafest':'https://www.instagram.com/sompasauna/',
  'Latin Fest Helsinki':'https://konepajanbiergarten.fi/',
  'Metsäsydän – Ode to Local Forests':'https://www.kanneltalo.fi/',
  'Improa! Improvised opera':'https://www.laplandhotels.com/FI/etela-suomi/helsinki/lapland-hotels-bulevardi.html',
