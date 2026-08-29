@@ -303,6 +303,10 @@ img{display:block;max-width:100%}
   padding:2px 5px 2px 13px}
 /* expanded, the card takes the whole row, so what it grew next to steps aside */
 .mapwrap.tl-open .mapchrome{opacity:0;pointer-events:none;transition:opacity var(--dur-short3)}
+/* and with the sheet all the way up there is no map left for them to control */
+.mapwrap.sheet-full .mapchrome,
+.mapwrap.sheet-full .timeline{opacity:0;pointer-events:none}
+.mapwrap .mapchrome,.mapwrap .timeline{transition:opacity var(--dur-short4) var(--ease-standard)}
 .timeline[data-collapsed="1"] .tl-sub,
 .timeline[data-collapsed="1"] .tl-track,
 .timeline[data-collapsed="1"] .tl-ticks{display:none}
@@ -759,7 +763,7 @@ img{display:block;max-width:100%}
    ============================================================ */
 const STR={
 en:{code:'EN',name:'English',
- myPlan:'My plan', when:'When', onNow:'On now', soon:'Starting soon', all:'Rest of the day',
+ myPlan:'My plan', when:'When', onNow:'On now', soon:'Starting soon', all:"Today's events",
  startsIn:'in {n} min', ended:'ended',
  scrubbed:'Showing what is on at this minute',
  whenNowSub:'Only what is running at this minute.',
@@ -816,7 +820,7 @@ en:{code:'EN',name:'English',
  dark:'Dark', light:'Light', alsoCalled:'Also listed as'},
 
 fi:{code:'FI',name:'Suomi',
- myPlan:'Oma päivä', when:'Milloin', onNow:'Nyt käynnissä', soon:'Alkaa pian', all:'Loppupäivä',
+ myPlan:'Oma päivä', when:'Milloin', onNow:'Nyt käynnissä', soon:'Alkaa pian', all:'Päivän ohjelma',
  startsIn:'{n} min päästä', ended:'ohi',
  scrubbed:'Näytetään mitä on käynnissä tällä minuutilla',
  whenNowSub:'Vain se mikä on juuri nyt käynnissä.',
@@ -873,7 +877,7 @@ fi:{code:'FI',name:'Suomi',
  dark:'Tumma', light:'Vaalea', alsoCalled:'Ohjelmassa myös nimellä'},
 
 zh:{code:'中',name:'中文',
- myPlan:'我的计划', when:'时间', onNow:'此刻在进行', soon:'即将开演', all:'今天剩下的',
+ myPlan:'我的计划', when:'时间', onNow:'此刻在进行', soon:'即将开演', all:'今日活动',
  startsIn:'{n} 分钟后', ended:'已结束',
  scrubbed:'已切到「此刻在进行」',
  whenNowSub:'只看此刻正在进行的。',
@@ -1934,6 +1938,7 @@ function setSnap(i,animate=true){
   sheet.classList.toggle('dragging',!animate);
   sheet.style.setProperty('--y',snaps[snapIdx]+'px');
   sheet.dataset.peek=snapIdx===0?'1':'0';
+  $('.mapwrap').classList.toggle('sheet-full',snapIdx===2);
   document.documentElement.style.setProperty('--sheet-y',snaps[snapIdx]+'px');
   sbody.classList.toggle('locked',snapIdx===0);
   if(!animate)requestAnimationFrame(()=>sheet.classList.remove('dragging'));
