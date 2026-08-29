@@ -253,14 +253,21 @@ def main():
     os.makedirs(os.path.join(ROOT, 'raw'), exist_ok=True)
     json.dump(cache, open(PLACE_CACHE, 'w'), ensure_ascii=False)
 
-    # a curated entry wins over the same thing arriving from an API
-    seen, out = set(), []
+    # A curated entry wins over the same thing arriving from an API, but it
+    # should not lose the photograph that came with the copy it beat.
+    seen, out, by_key = set(), [], {}
     for r in rows:
         keys = {(fold(r['te'])[:26], round(r['la'], 3), round(r['ln'], 3), r['s']),
                 (fold(r['te'])[:12], round(r['la'], 3), round(r['ln'], 3), r['s'])}
-        if keys & seen:
+        clash = keys & seen
+        if clash:
+            kept = by_key.get(next(iter(clash)))
+            if kept is not None and not kept['img'] and r.get('img'):
+                kept['img'] = r['img']
             continue
         seen |= keys
+        for k in keys:
+            by_key[k] = r
         tags = r.get('tags') or []
         r['io'] = 'out' if 'out' in tags else 'both'
         r['x'] = 1 if 'soldout' in tags else 0
@@ -283,6 +290,48 @@ def main():
         for k2 in ('long_run', 'tags'):
             r.pop(k2, None)
         out.append(r)
+
+    # Anything still without a photograph gets one from the same event as the
+    # APIs describe it, matched on title and place. A wrong photograph is worse
+    # than none, so the match has to agree on both.
+    pool = [r for r in rows if r.get('img')]
+    filled = 0
+    for r in out:
+        if r['img']:
+            continue
+        a = fold(r['te'])
+        for c in pool:
+            b = fold(c['te'])
+            if len(b) < 8 or len(a) < 8:
+                continue
+            if not (a[:18] in b or b[:18] in a):
+                continue
+            if abs(c['la'] - r['la']) > 0.004 or abs(c['ln'] - r['ln']) > 0.008:
+                continue
+            r['img'] = c['img']
+            filled += 1
+            break
+    # Last resort: a photograph of the place, from the venue's own site. For a
+    # Venetsialaiset on the rocks at Loyly the place *is* the picture; for a gig
+    # it is not, so these are marked and captioned rather than passed off as the
+    # event's own.
+    try:
+        venue_photos = json.load(open(os.path.join(ROOT, 'raw', 'venue_photos.json')))
+    except Exception:
+        venue_photos = {}
+    vfilled = 0
+    for r in out:
+        if r['img']:
+            continue
+        for venue, url in venue_photos.items():
+            if fold(venue) in fold(r['ve']) or fold(venue) in fold(r['v']):
+                r['img'], r['vp'] = url, 1
+                vfilled += 1
+                break
+    for r in out:
+        r.setdefault('vp', 0)
+    print(f'photographs: {sum(1 for o in out if o["img"])} of {len(out)}'
+          f' ({filled} matched to an API entry, {vfilled} venue photographs)')
 
     out.sort(key=lambda o: (o['s'], -o['r']))
     json.dump(out, open(os.path.join(ROOT, 'raw', 'app_events.json'), 'w'),
