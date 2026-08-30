@@ -2,241 +2,186 @@
 """Events that no open API carries.
 
 Linked Events covers what the city runs and Helsinki Festival publishes its own
-programme, but between them they miss the clubs, the venue gigs and the
-Venetsialaiset street parties, which on the last Saturday of August is most of
-what is actually happening. Those are listed here by hand, with the venue named
-so the build can look its coordinates up in the city's place registry.
+programme, but between them they miss whatever a private organiser puts on. On
+a Sunday that means Helsinki Design Week's own programme, the summer stages
+closing for the year, the neighbourhood flea markets, and the evening gigs --
+none of which the city's API carries.
 
-Fields: (start, end, name_en, name_fi, venue_query, price, rank, tags)
+Where only a start time was published, a conventional length is used for the
+end: three hours for a market, four for an evening gig, two for a talk. Those
+ends are a shape for the timeline, not a promise, and the note says so where it
+matters.
+
+Fields: (start, end, name_en, name_fi, venue_query, price, rank, tags, note)
   rank  3 unmissable, 2 strong, 1 good if you are passing, 0 the rest
   tags  'out' outdoors · 'free' · 'soldout' · 'late' · 'k18'
 """
 
-DAY = '2026-08-29'
+DAY = '2026-08-30'
 
 CURATED = [
- # ---- afternoon, still catchable ----
- ('16:00','22:00','Sompafest','Sompafest','Sompasauna','free',3,['out','free'],
-  'Ohms 16:00 · Musta Koira 16:55 · Josei & Benji 17:50 · Ign°ra 18:45 · Elia Sonder 19:25 · Himanen 20:20 · Pändikollektiivi 21:15, and Cherilee reading spoken word alongside. At the sauna on the Mustikkamaa shore; the sauna itself stays open around the clock.'),
- ('14:00','20:00','MustikkaFest','MustikkaFest','Mustikkamaa','free',3,['out','free'],
-  'Katve 15:00 · Sound Sisters 15:30 · Duo Henriksson/Virtanen 16:00 · Kaarlo Soudunsaari 17:00 · Freeta Freeta 18:00 · Lyyti 19:00, with workshops running alongside. On the Mustikkamaa shore, ten minutes from Sompasauna.'),
- ('14:00','16:00','Finnish Nature Day','Suomen luonnon päivä','Hallainvuori','free',2,['out','free'],
-  'Pekko Käppi plays a forest concert at 15:00.'),
- ('14:00','15:45',"Animals' Holiday Parade & Concert",'Eläinten vapaapäivä -kulkue','Kalasatama','free',2,['out','free'],
-  'A jazz parade with giant animal puppets, then a family concert.'),
- ('14:00','23:00','Latin Fest Helsinki','Latin Fest Helsinki','Konepaja','~20 €',2,['out'],
-  'Jaranas del Norte, Uña de Gato, Hola Helsinki, Radio Silencio, Duo Cantares — live music, dancing and food in the Biergarten.'),
- ('15:00','16:00','Metsäsydän – Ode to Local Forests','Metsäsydän','Kanneltalo','free',1,['free'],''),
- ('15:00','16:00','Improa! Improvised opera','Improa!','Lapland Hotels Bulevardi','free',1,['free'],''),
- ('15:00','16:00','Puzzle Theatre: Bois – Woods','Puzzle Theatre: Bois','Annantalo','',1,[],''),
- ('15:00','16:00','Transport: Fasten Your Seatbelts','Transport','Nukketeatteri Sampo','25 €',1,[],''),
- ('15:00','16:00','Agit-Cirk: RapuRequiem','Agit-Cirk: RapuRequiem','Kanneltalo','24,80/20 €',1,[],''),
- ('15:00','18:00','Paint & Party','Paint & Party','Teerenpeli','49 €',0,[],''),
- ('15:00','17:00','Minun Maunulani','Minun Maunulani','Maunulan kirjasto','free',0,['free'],''),
- ('15:00','17:00','Rony Rex','Rony Rex','Kaivopuisto','',2,['out'],
-  'Outdoor electronic music in the park by the sea.'),
- ('16:00','19:00','Kolibrí Festival opening','Kolibrí-festivaalin avajaiset','Oodi','free',2,['free'],
-  'Multilingual, interactive, made for families.'),
- ('16:00','17:00','Satamatta jääneet – Hengitys & Nimetön','Satamatta jääneet','Mustikkamaa','free',1,['out','free'],''),
- ('16:00','21:00','Ikuinen Millenium','Ikuinen Millenium','Tiivistämö','11 €',2,['k18'],
-  'A 2000–2015 nostalgia party: dance session 16–17, salsa and Afro-Cuban workshop 17–18, outdoor DJ from 17:30.'),
- ('16:00','17:00','Divadlo Alfa: Transport – Tipping Point','Divadlo Alfa: Transport','Nukketeatteri Sampo','25 €',1,[],''),
- ('16:00','17:30','Viapori Jazz: Mother of Jazz','Viapori Jazz: Mother of Jazz','Suomenlinna','43 €',2,[],
-  'Aki Rissanen and Selma Savolainen play Mary Lou Williams, out on the island.'),
- ('17:00','02:00','Korjaamo Venetsialaiset','Korjaamon Venetsialaiset','Korjaamo','free',3,['free','late'],
-  'Live jazz, food and the end-of-summer feeling, running until 02:00. Mostly free; the painting workshop is about 35 €.'),
- ('17:00','22:00','Venetsialaiset by the sea','Venetsialaiset','Rantapuisto','free',2,['out','free'],
-  'Jonathan Duo, DJ Ivari Retsä, and a music quiz at 19:15 — a very Finnish end of summer.'),
- ('17:00','20:00','PK-Live',"PK-Live","Henry's Music Bar",'free',0,['free'],''),
- ('17:00','20:00','Cosplay Cafe & Workshop','Cosplay Cafe','Luuppi','free',0,['free'],''),
- ('17:00','18:00','Tuntemattoman tarina','Tuntemattoman tarina','Pikku Sampo','5 €',0,[],''),
- ('17:00','21:00','VuoRock','VuoRock','Vuotalo','free',1,['free'],''),
- # ---- evening ----
- ('18:00','21:30','Finland–Sweden Athletics','Suomi–Ruotsi-maaottelu','Olympiastadion','from 19 €',2,['out'],
-  'The stadium fills for the Finland–Sweden match. The event plaza outside is open 12:00–19:00, with a meet and greet 15:00–17:00.'),
- ('18:00','19:05','Cloud Gate Dance Theatre of Taiwan: 13 Tongues','Cloud Gate: 13 Tongues','Tanssin talo','69/57 €',3,[],
-  '65 minutes of contemporary dance from Taiwan, and the strongest single piece of art on tonight.'),
- ('18:00','23:30','Nuclear Summer','Nuclear Summer','Ääniwalli','from 28 €',2,[],
-  'Ten bands in one night: SUR-R, URTEINI-PÄÄ, Echo Is Your Love, 1980AD, Plastic Tones, Kansakunnan Ylpeys, AKDK, Airuet, RB United, kutonen.'),
- ('18:00','22:00','Löyly Venetsialaiset','Löyly Venetsialaiset','Löyly','10–15 €',2,['out'],
-  'The sea, a DJ and a saxophone on the rocks at Hernesaari.'),
- ('18:00','19:30','OLEMA','OLEMA','Caisa','20/7 €',1,[],''),
- ('18:00','19:00','Snafu: Epidermis Circus','Snafu: Epidermis Circus','WHS Teatteri Union','25/20 €',1,[],''),
- ('18:00','19:30','Katajanokan muusikot: Night by the Sea','Yö meren äärellä','Studium Catholicum','free',1,['free'],''),
- ('18:00','21:00','Summer Terrace Live Band','Kesäterassin live','Finlandia Park Hotel','free',0,['out','free'],''),
- ('18:00','20:00','Random Play Dance','Random Play Dance','Pihlajamäen nuorisotalo','free',0,['free'],''),
- ('18:00','23:00','GTC Mafia Night','GTC Mafia Night','GTC','~5 €',0,[],''),
- ('18:30','21:00','& Julia','& Julia','Helsingin kaupunginteatteri','',1,[],''),
- ('18:30','21:00','Mozart & Salieri / Zanetto','Mozart & Salieri / Zanetto','Aleksanterin teatteri','49 €',1,[],''),
- ('18:30','21:30','Paint & Party','Paint & Party','Studio & Bar Helsinki','49 €',0,[],''),
- ('19:00','21:10','Czech Philharmonic · Bychkov · Yunchan Lim','Tšekin filharmoninen orkesteri','Musiikkitalo','21–125 €',3,[],
-  "Ravel's G major piano concerto and Smetana's Má vlast, about two hours ten. If you care about classical music at all, this is the evening's peak."),
- ('19:00','22:00','Haaveet album release + Lasten Hautausmaa Duo','Haaveet levynjulkaisu','Kuudes Linja','from 16 €',2,[],''),
- ('19:00','21:00','Open Air Cinema: Dune Part Two','Ulkoilmaelokuva: Dyyni – osa kaksi','Malja','free',3,['out','free'],
-  'A big screen by the water, free, on the last properly warm Saturday of the year.'),
- ('19:00','21:00','A Scandalous September','Skandaalinkäryinen syyskuu','NoName','21/16,80 €',0,[],''),
- ('19:00','21:00','Before Sunset Experience','Before Sunset Experience','GTC','',0,[],''),
- ('19:00','21:00','Lauri Haav','Lauri Haav','Allas Pool','49,90 €',0,['soldout'],
-  'Sold out — do not make the trip unless you have found a resale ticket.'),
- ('20:00','21:30','Viapori Jazz: Johanna Försti sings Dolly Parton','Viapori Jazz: Johanna Försti','Suomenlinna','43 €',2,[],''),
- ('20:00','23:00','Alter Annala: Git Gud + Nenerchy','Alter Annala','Tavastia','from 30 €',2,[],''),
- ('20:00','23:00','On The Rocks 25 Years: Monokate + Suzi Sabotage','On The Rocks 25 v.','On the Rocks','from 27 €',1,[],''),
- ('20:00','22:30','The Larry Sandman Trio Experience','The Larry Sandman Trio','Semifinal','from 13 €',1,[],''),
- ('20:00','21:00','Knutkit: Behind the Mask','Knutkit: Behind the Mask','Nukketeatteri Sampo','25/20 €',1,[],''),
- ('20:00','22:00','Re-Charge','Re-Charge','Kalasatama','free',1,['out','free'],''),
- ('21:00','22:20','Eury / Orfeo','Eury / Orfeo','Laajasalon kirkko','15/10 €',2,[],
-  'A contemporary chamber opera set against a baroque Orfeo, in a church across the water.'),
- # ---- past midnight ----
- ('22:00','04:00','Cotò Grand Closing Mayhem','Cotò Grand Closing','Cotò','10–25 €',2,['late','k18'],
-  'The closing night of the room itself.'),
- ('22:00','04:00','Jersey Party Vol. 3','Jersey Party Vol. 3','Barcelo','~20 €',1,['late','k18'],''),
- ('22:00','04:00','Uptown Saturday','Uptown Saturday','Kuudes Linja','free before 00:00',2,['late'],
-  'Dancehall, soca and Afro. Free before midnight, then about 8 € in advance or 10 € at the door.'),
- ('22:00','04:00','Storyville Discolauantai: DJ Juza','Storyville Discolauantai','Storyville','from 6,50 €',1,['late'],''),
- ('23:00','04:00','On The Rocks 25 Years: Mode For The Masses','Mode For The Masses','On the Rocks','from 5,50 €',1,['late'],
-  'A Depeche Mode tribute club.'),
- # ---- Venetsialaiset, neighbourhood by neighbourhood ----
- ('16:00','22:00','Venetsialaiset Kruunuvuorenranta','Venetsialaiset Kruunuvuorenranta','Kruunuvuorenranta','free',1,['out','free'],''),
- ('17:00','20:00','Venetsialaiset Katajanokka','Venetsialaiset Katajanokka','Katajanokka','free',1,['out','free'],''),
- ('18:00','22:00','Venetsialaiset Kruununhaka','Venetsialaiset Liisanpuistikko','Liisanpuistikko','free',1,['out','free'],''),
- ('18:00','21:30','Venetsialaiset Lauttasaari','Venetsialaiset Kasinoranta','Kasinonranta','free',1,['out','free'],''),
- ('16:00','22:00','Venetsialaiset Lehtisaari','Venetsialaiset Lehtisaari','Lehtisaari','free',1,['out','free'],''),
- ('18:00','22:00','Venetsialaiset Munkkiniemi','Venetsialaiset Munkkiniemi','Munkkiniemen ranta','free',1,['out','free'],''),
- ('18:00','22:00','Venetsialaiset Suomenlinna','Venetsialaiset Suomenlinna','Suomenlinna','free',1,['out','free'],''),
- # ---- art you can still walk into ----
- ('10:00','17:00','HAM: Abakanowicz · Ala-Maunus & Markkula · Tove Jansson','HAM Helsingin taidemuseo','HAM','',2,[],
-  'Magdalena Abakanowicz, Petri Ala-Maunus & Mauno Markkula, and the Tove Jansson gallery. The Weave with Rosa Tolnov Clausen workshop runs until about 16:00. Closes at 17:00.'),
- ('11:00','18:00','Amos Rex: Generation 2026','Amos Rex: Generation 2026','Amos Rex','',2,[],
-  'And the free Dansbana! floor outside, which needs no ticket at all.'),
- ('10:00','20:30','Kiasma: Edith Karlson','Kiasma: Edith Karlson','Kiasma','',1,[],''),
- ('10:00','20:00','Ateneum: Elga Sesemann · Eero Nelimarkka','Ateneum','Ateneum','',1,[],''),
- ('12:00','16:00','Anton Alvarez: The Colour of Gravity','Anton Alvarez','Helsinki Contemporary','free',1,['free'],''),
- ('12:00','16:00','Love & Loss','Love & Loss','TakeMeHome','free',0,['free'],''),
+ # ---- markets, and the design week that is on its last day ----
+ ('09:00','15:00','Aleksis Kivi Street Flea Market','Aleksis Kiven kadun kirppis',
+  'Dallapénpuisto','free',1,['out','free'],
+  'The Vallila street flea market, in the park by Dallapénpuisto. Free, outdoors, and the '
+  'rain is forecast to be at its heaviest right through it.'),
+ ('11:00','16:00','Konepaja Block Flea Market','Konepajan korttelikirppis',
+  'Konepaja','free',1,['out','free'],
+  'The Konepaja block sells its cupboards out onto the old railway yard. Free.'),
+ ('11:00','18:00','Design Market','Design Market','Kaapelitehdas','free',3,['free'],
+  'The Nordics\' biggest design warehouse sale, and the day Helsinki Design Week opens: '
+  'furniture, homeware, fashion and accessories sold in Merikaapelihalli by the people who '
+  'made them. Free, indoors, and the last of two days -- which on a wet Sunday makes it the '
+  'easiest good decision of the day.'),
+ ('11:00','18:00',"Children's Design Week",'Lasten Design Week','Kaapelitehdas','free',1,['free'],
+  'Hands-on workshops for children in Turbiinisali, in the same building as the Design '
+  'Market and on the same two days.'),
+ ('17:00','20:00','Helsinki Indie','Helsinki Indie','Oodi','free',1,['free'],
+  'Free programme and a flea market inside the central library.'),
+
+ # ---- music ----
+ ('15:00','17:00','Kun Ilta Tummentuu','Kun Ilta Tummentuu','Aino Acktén huvila','',1,[],
+  'An afternoon concert in the villa at Tullisaari.'),
+ ('15:00','20:00','Kiska Kii Festival','Kiska Kii -festivaali','Käpylän lippakioski','free',1,
+  ['out','free'],
+  'A small free festival around the Käpylä kiosk. Outdoors, so the forecast matters.'),
+ ('15:00','20:00','Storyville Country Festival: closing day',
+  'Storyville Country Festival: päätöspäivä','Storyville','',1,[],
+  'The country festival plays out its last day at Storyville.'),
+ ('19:00','23:00','On The Rocks 25 Years: Yona + Kanerva','On The Rocks 25 vuotta: Yona + Kanerva',
+  'On The Rocks','',2,['late'],
+  'The club turns twenty-five and puts Yona and Kanerva on for it.'),
+ ('19:00','23:00','Rico Ace (UK)','Rico Ace (UK)','Kuudes Linja','',1,['late'],''),
+ ('19:00','23:00','Siltanen summer gigs and club','Siltasen kesäkeikat ja klubit',
+  'Siltanen','',1,['late'],'The summer series and the club that follows it.'),
+
+ # ---- theatre, opera, film ----
+ ('16:00','18:00','Diivat studiossa','Diivat studiossa','Aleksanterin teatteri','49 €',1,[],''),
+ ('17:00','20:00','Myrskyluodon Maija','Myrskyluodon Maija','Kivinokan kesäteatteri','44,10 €',1,
+  ['out'],'Open-air summer theatre at Kivinokka -- check the sky before you commit to it.'),
+ ('15:00','17:00','Torpantie 3','Torpantie 3','Kupla Tapiola','',0,[],''),
+ ('14:00','16:00','Poetry afternoon','Runoiltapäivä','Herttoniemen siirtolapuutarha','',0,['out'],
+  'Poetry among the allotment huts at Herttoniemi.'),
+ ('21:00','23:00','Kesäkino Engel','Kesäkino Engel','Cafe Engel','',1,['out'],
+  'Open-air cinema in the courtyard, and by nine the rain has cleared.'),
+ ('09:00','23:00','Espoo Ciné International Film Festival','Espoo Ciné','Kino Tapiola','',1,[],
+  'The festival runs all day at Kino Tapiola.'),
+
+ # ---- outdoors and sport ----
+ ('10:00','15:00','Helsinki Gran Fondo','Helsinki Gran Fondo','Velodromi','',1,['out'],
+  'The mass-participation ride starts and finishes at the velodrome.'),
+ ('09:00','11:00','ROOTS: Yoga & Sauna','ROOTS: jooga & sauna','Löyly','',0,[],
+  'Booking required.'),
+ ('11:00','13:00','Sunday Trail by Juoksut','Sunday Trail by Juoksut','Keskuspuisto','free',1,
+  ['out','free'],'A free group run into the central park.'),
+ ('11:00','12:30','Landscape yoga','Maisemajooga','Vallisaari','',1,['out'],
+  'On the island, which means a ferry each way.'),
+
+ # ---- one-offs and oddities ----
+ ('11:00','17:00','Futuro House','Futuro-talo','Kaisaniemen kasvitieteellinen puutarha','',1,[],
+  'The 1968 plastic flying-saucer house, parked in the botanic garden.'),
+ ('12:00','14:00','Aino Ackté theatre walk','Aino Ackté -teatterikävely',
+  'Tullisaaren kartanonpuisto','',0,['out'],''),
+ ('12:00','17:00','Kallio Computer Museum','Kallion tietokonemuseo','Kallion tietokonemuseo','',1,
+  [],'A working computer shop of 1984, kept running. Small, indoors and genuinely odd.'),
+ ('10:00','18:00','Lego Jurassic World','Lego Jurassic World','Malmin jäähalli','',0,[],''),
+ ('10:00','16:00','David Loy: eco-zen workshop','David Loy: ekozen-työpaja',
+  'Kulttuurikeskus Sofia','',0,[],'In English.'),
+ ('11:00','15:00','Responsibly together!','Vastuullisesti yhdessä!','Seikkailupuisto Huippu','',0,
+  ['out'],''),
+
+ # ---- the weekly jazz that is always there on a Sunday ----
+ ('18:30','22:00','Jazzy Jam Sunday','Jazzy Jam Sunday','Harju 8','free',2,['out','free'],
+  'The weekly Sunday session on the Harju 8 terrace, where visiting players sit in with the '
+  'local regulars. Free, outdoors, and the rain is forecast to have stopped by then.'),
 ]
 
 # The same notes in the other two languages, keyed by the English title.
 NOTES_FI = {
-    'Sompafest': 'Ohms 16:00 · Musta Koira 16:55 · Josei & Benji 17:50 · Ign°ra 18:45 · Elia Sonder 19:25 · Himanen 20:20 · Pändikollektiivi 21:15, ja Cherilee lausumassa runoja siinä ohessa. Saunalla Mustikkamaan rannassa; itse sauna on auki ympäri vuorokauden.',
- 'MustikkaFest': 'Katve 15:00 · Sound Sisters 15:30 · Duo Henriksson/Virtanen 16:00 · Kaarlo Soudunsaari 17:00 · Freeta Freeta 18:00 · Lyyti 19:00, ja työpajat pyörivät koko ajan rinnalla.',
- 'Finnish Nature Day': 'Pekko Käppi soittaa metsäkonsertin klo 15.',
- "Animals' Holiday Parade & Concert": 'Jazzkulkue jättimäisillä eläinnukeilla, ja sen jälkeen perhekonsertti.',
- 'Latin Fest Helsinki': 'Jaranas del Norte, Uña de Gato, Hola Helsinki, Radio Silencio, Duo Cantares — livemusiikkia, tanssia ja ruokaa Biergartenissa.',
- 'Rony Rex': 'Elektronista musiikkia ulkona puistossa meren äärellä.',
- 'Kolibrí Festival opening': 'Monikielinen, vuorovaikutteinen, tehty perheille.',
- 'Ikuinen Millenium': 'Nostalgiabileet vuosilta 2000–2015: tanssisessio 16–17, salsa- ja afrokuubalainen työpaja 17–18, ulkona DJ klo 17.30 alkaen.',
- 'Viapori Jazz: Mother of Jazz': 'Aki Rissanen ja Selma Savolainen soittavat Mary Lou Williamsia, saaressa.',
- 'Korjaamo Venetsialaiset': 'Livejazzia, ruokaa ja loppukesän tunnelma kello kahteen asti. Pääosin ilmaista; maalaustyöpaja noin 35 €.',
- 'Venetsialaiset by the sea': 'Jonathan Duo, DJ Ivari Retsä ja musiikkivisa klo 19.15 — hyvin suomalainen loppukesä.',
- 'Finland–Sweden Athletics': 'Stadion täyttyy Suomi–Ruotsi-maaottelusta. Ulkopuolen tapahtuma-aukio on auki 12–19, ja urheilijoiden tapaaminen on 15–17.',
- 'Cloud Gate Dance Theatre of Taiwan: 13 Tongues': '65 minuuttia nykytanssia Taiwanista, illan vahvin yksittäinen taideteos.',
- 'Nuclear Summer': 'Kymmenen bändiä yhtenä iltana: SUR-R, URTEINI-PÄÄ, Echo Is Your Love, 1980AD, Plastic Tones, Kansakunnan Ylpeys, AKDK, Airuet, RB United, kutonen.',
- 'Löyly Venetsialaiset': 'Meri, DJ ja saksofoni Hernesaaren kallioilla.',
- 'Czech Philharmonic · Bychkov · Yunchan Lim': 'Ravelin G-duurin pianokonsertto ja Smetanan Má vlast, noin kaksi tuntia kymmenen. Jos klassinen musiikki kiinnostaa lainkaan, tämä on illan huippu.',
- 'Open Air Cinema: Dune Part Two': 'Iso valkokangas veden äärellä, ilmainen, vuoden viimeisenä kunnolla lämpimänä lauantaina.',
- 'Lauri Haav': 'Loppuunmyyty — älä tee matkaa ellet ole löytänyt lippua jälkimarkkinoilta.',
- 'Viapori Jazz: Johanna Försti sings Dolly Parton': 'Toinen Viapori Jazzin ilta samassa saaressa.',
- 'Alter Annala: Git Gud + Nenerchy': 'Tavastia, ja illan varmin klubikeikka.',
- 'Eury / Orfeo': 'Nykyaikainen kamariooppera barokin Orfeoa vasten, kirkossa veden toisella puolen.',
- 'Cotò Grand Closing Mayhem': 'Tilan oma päätösyö.',
- 'Uptown Saturday': 'Dancehallia, socaa ja afroa. Ennen puoltayötä ilmainen, sen jälkeen noin 8 € ennakkoon tai 10 € ovelta.',
- 'On The Rocks 25 Years: Mode For The Masses': 'Depeche Mode -tribuuttiklubi.',
- 'HAM: Abakanowicz · Ala-Maunus & Markkula · Tove Jansson': 'Magdalena Abakanowicz, Petri Ala-Maunus & Mauno Markkula ja Tove Jansson -galleria. Kudo Rosa Tolnov Clausenin kanssa -työpaja noin klo 16 asti. Sulkeutuu 17.',
- 'Amos Rex: Generation 2026': 'Ja ulkona ilmainen Dansbana!-tanssilattia, joka ei vaadi lippua lainkaan.',
+    'Aleksis Kivi Street Flea Market': 'Vallilan katukirppis Dallapénpuistossa. Ilmainen ja ulkona -- ja juuri sen päälle on ennustettu päivän kovimmat sateet.',
+    'Konepaja Block Flea Market': 'Konepajan kortteli tyhjentää kaappinsa vanhalle veturitallialueelle. Ilmainen.',
+    'Design Market': 'Pohjoismaiden suurin designin varastomyynti ja Helsinki Design Weekin avauspäivä: huonekaluja, astioita, vaatteita ja asusteita Merikaapelihallissa suoraan tekijöiltä. Ilmainen, sisällä, ja kahden päivän jälkimmäinen -- mikä sateisena sunnuntaina tekee tästä päivän helpoimman hyvän päätöksen.',
+    "Children's Design Week": 'Lasten työpajoja Turbiinisalissa, samassa rakennuksessa Design Marketin kanssa ja samoina kahtena päivänä.',
+    'Helsinki Indie': 'Ilmaisohjelmaa ja kirppis keskustakirjastossa.',
+    'Kun Ilta Tummentuu': 'Iltapäiväkonsertti Tullisaaren huvilalla.',
+    'Kiska Kii Festival': 'Pieni ilmainen festivaali Käpylän lippakioskin ympärillä. Ulkona, joten ennuste ratkaisee.',
+    'Storyville Country Festival: closing day': 'Country-festivaali soittaa päätöspäivänsä Storyvillessä.',
+    'On The Rocks 25 Years: Yona + Kanerva': 'Klubi täyttää 25 vuotta ja tuo lavalle Yonan ja Kanervan.',
+    'Siltanen summer gigs and club': 'Kesäsarja ja sen jälkeen klubi.',
+    'Myrskyluodon Maija': 'Kesäteatteria ulkona Kivinokassa -- katso taivaalle ennen kuin lupaat mitään.',
+    'Poetry afternoon': 'Runoutta Herttoniemen siirtolapuutarhan mökkien keskellä.',
+    'Kesäkino Engel': 'Ulkoilmaelokuva sisäpihalla, ja yhdeksään mennessä sade on ohi.',
+    'Espoo Ciné International Film Festival': 'Festivaali pyörii koko päivän Kino Tapiolassa.',
+    'Helsinki Gran Fondo': 'Yleisölenkki lähtee ja päättyy velodromille.',
+    'ROOTS: Yoga & Sauna': 'Vaatii ilmoittautumisen.',
+    'Sunday Trail by Juoksut': 'Ilmainen porukkalenkki Keskuspuistoon.',
+    'Landscape yoga': 'Saarella, eli lautta molempiin suuntiin.',
+    'Futuro House': 'Vuoden 1968 muovinen lentävä lautanen, pysäköitynä kasvitieteelliseen puutarhaan.',
+    'Kallio Computer Museum': 'Toimiva vuoden 1984 tietokonekauppa, yhä käynnissä. Pieni, sisällä ja aidosti omalaatuinen.',
+    'David Loy: eco-zen workshop': 'Englanniksi.',
+    'Jazzy Jam Sunday': 'Viikoittainen sunnuntaisessio Harju 8:n terassilla, jossa vierailevat soittajat pääsevät lavalle paikallisten vakiokasvojen kanssa. Ilmainen, ulkona, ja sateen pitäisi olla siihen mennessä ohi.',
 }
 
 NOTES_ZH = {
-    'Sompafest': '16:00 Ohms · 16:55 Musta Koira · 17:50 Josei & Benji · 18:45 Ign°ra · 19:25 Elia Sonder · 20:20 Himanen · 21:15 Pändikollektiivi，另有 Cherilee 的口语诗表演。在 Mustikkamaa 岸边的桑拿旁；桑拿本身全天开放。',
- 'MustikkaFest': '15:00 Katve · 15:30 Sound Sisters · 16:00 Duo Henriksson/Virtanen · 17:00 Kaarlo Soudunsaari · 18:00 Freeta Freeta · 19:00 Lyyti，工作坊全程同时进行。',
- 'Finnish Nature Day': '15:00 Pekko Käppi 的森林音乐会。',
- "Animals' Holiday Parade & Concert": '爵士游行加巨型动物木偶，之后是家庭音乐会。',
- 'Latin Fest Helsinki': 'Jaranas del Norte、Uña de Gato、Hola Helsinki、Radio Silencio、Duo Cantares——啤酒花园里的拉美现场、舞蹈和食物。',
- 'Rony Rex': '海边公园里的露天电子音乐。',
- 'Kolibrí Festival opening': '多语言、互动、为家庭做的。',
- 'Ikuinen Millenium': '2000–2015 怀旧派对：16–17 舞蹈 session，17–18 萨尔萨与非洲古巴工作坊，17:30 起户外 DJ。',
- 'Viapori Jazz: Mother of Jazz': 'Aki Rissanen 和 Selma Savolainen 演绎 Mary Lou Williams，在岛上。',
- 'Korjaamo Venetsialaiset': '现场爵士、餐饮和夏末气氛，一路开到凌晨两点。大部分免费；绘画工作坊约 35 €。',
- 'Venetsialaiset by the sea': 'Jonathan Duo、DJ Ivari Retsä，19:15 音乐问答——非常芬兰的夏末。',
- 'Finland–Sweden Athletics': '体育场里是芬兰对瑞典的田径对抗赛。场外活动广场 12:00–19:00 开放，15:00–17:00 有运动员见面会。',
- 'Cloud Gate Dance Theatre of Taiwan: 13 Tongues': '来自台湾的 65 分钟当代舞，今晚艺术分量最重的一场。',
- 'Nuclear Summer': '一晚十支乐队：SUR-R、URTEINI-PÄÄ、Echo Is Your Love、1980AD、Plastic Tones、Kansakunnan Ylpeys、AKDK、Airuet、RB United、kutonen。',
- 'Löyly Venetsialaiset': 'Hernesaari 岩石上的海、DJ 和萨克斯。',
- 'Czech Philharmonic · Bychkov · Yunchan Lim': '拉威尔 G 大调钢琴协奏曲加斯美塔那《我的祖国》，约两小时十分钟。只要你对古典音乐有一点兴趣，这就是今晚的顶点。',
- 'Open Air Cinema: Dune Part Two': '水边的大银幕，免费，而且是今年最后一个真正暖和的周六。',
- 'Lauri Haav': '已售罄——除非你搞到转票，否则别专程跑。',
- 'Viapori Jazz: Johanna Försti sings Dolly Parton': 'Viapori Jazz 在同一座岛上的第二场。',
- 'Alter Annala: Git Gud + Nenerchy': 'Tavastia，今晚最稳的一场俱乐部演出。',
- 'Eury / Orfeo': '当代室内歌剧对上巴洛克的 Orfeo，在海对岸的教堂里。',
- 'Cotò Grand Closing Mayhem': '这个空间自己的谢幕之夜。',
- 'Uptown Saturday': 'Dancehall、soca 和 afro。午夜前免费，之后预售约 8 €、现场约 10 €。',
- 'On The Rocks 25 Years: Mode For The Masses': 'Depeche Mode 致敬俱乐部。',
- 'HAM: Abakanowicz · Ala-Maunus & Markkula · Tove Jansson': 'Magdalena Abakanowicz、Petri Ala-Maunus & Mauno Markkula，以及 Tove Jansson 展厅。与 Rosa Tolnov Clausen 一起织布的工作坊到约 16:00。17:00 闭馆。',
- 'Amos Rex: Generation 2026': '门外还有免费的 Dansbana! 舞池，完全不需要票。',
+    'Aleksis Kivi Street Flea Market': 'Vallila 的街头跳蚤市场，就在 Dallapénpuisto 公园。免费、露天——而预报里全天最大的雨正好压在这段时间。',
+    'Konepaja Block Flea Market': 'Konepaja 街区把家里的柜子搬到旧机车厂空地上卖。免费。',
+    'Design Market': '北欧最大的设计品仓库特卖，也是 Helsinki Design Week 的开幕日：家具、家居、服饰与配件，在 Merikaapelihalli 由制作者本人摆摊。免费、室内，为期两天的最后一天——在下雨的周日，这是今天最省心的好选择。',
+    "Children's Design Week": 'Turbiinisali 里的儿童手作工作坊，与 Design Market 同一栋楼、同样两天。',
+    'Helsinki Indie': '中央图书馆里的免费节目加跳蚤市场。',
+    'Kun Ilta Tummentuu': 'Tullisaari 别墅里的下午音乐会。',
+    'Kiska Kii Festival': 'Käpylä 报刊亭周边的小型免费音乐节。露天，所以要看天。',
+    'Storyville Country Festival: closing day': '乡村音乐节在 Storyville 打完最后一场。',
+    'On The Rocks 25 Years: Yona + Kanerva': '俱乐部二十五周年，请来 Yona 和 Kanerva。',
+    'Siltanen summer gigs and club': '夏季演出系列，之后接夜场。',
+    'Myrskyluodon Maija': 'Kivinokka 的露天夏季剧场——答应去之前先看看天。',
+    'Poetry afternoon': '在 Herttoniemi 市民农园的小屋之间读诗。',
+    'Kesäkino Engel': '内院里的露天电影，到九点雨已经停了。',
+    'Espoo Ciné International Film Festival': '影展在 Kino Tapiola 全天放映。',
+    'Helsinki Gran Fondo': '大众骑行赛，从自行车馆出发也在那里结束。',
+    'ROOTS: Yoga & Sauna': '需要报名。',
+    'Sunday Trail by Juoksut': '免费的中央公园跑团。',
+    'Landscape yoga': '在岛上，来回都要坐渡轮。',
+    'Futuro House': '1968 年的塑料飞碟屋，停在植物园里。',
+    'Kallio Computer Museum': '一间还能开机的 1984 年电脑店。小、室内，而且是真的有意思。',
+    'David Loy: eco-zen workshop': '英语进行。',
+    'Jazzy Jam Sunday': 'Harju 8 露台上的每周日爵士即兴场，客座乐手与本地常客同台。免费、露天，按预报那时雨已经停了。',
 }
 
-# Where each hand-listed event actually lives on the web, keyed by English title.
 # Photographs for events no API carries one for. Instagram is out -- its image
 # URLs are signed and expire, and it serves nothing to a logged-out fetch -- so
 # these come from Wikimedia Commons, which is freely licensed and stable. The
 # credit is shown on the picture, which is what the licence asks for.
 PHOTOS = {
-    'Sompafest': (
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/'
-        'Sompasauna._%2853959712332%29.jpg/1280px-Sompasauna._%2853959712332%29.jpg',
-        'theowoo · CC BY-SA 2.0'),
 }
 
+# One official page per event, checked at build time and dropped if it 404s.
 # Anything not here gets no "official listing" button rather than a dead one.
 LINKS = {
-    'Sompafest':'https://www.instagram.com/sompasauna/',
- 'Latin Fest Helsinki':'https://konepajanbiergarten.fi/',
- 'Metsäsydän – Ode to Local Forests':'https://www.kanneltalo.fi/',
- 'Improa! Improvised opera':'https://www.laplandhotels.com/FI/etela-suomi/helsinki/lapland-hotels-bulevardi.html',
- 'Puzzle Theatre: Bois – Woods':'https://www.annantalo.fi/',
- 'Transport: Fasten Your Seatbelts':'https://www.teatterisampo.fi/',
- 'Agit-Cirk: RapuRequiem':'https://www.kanneltalo.fi/',
- 'Paint & Party':'https://www.teerenpeli.com/',
- 'Minun Maunulani':'https://www.helmet.fi/',
- 'Kolibrí Festival opening':'https://www.oodihelsinki.fi/en/',
- 'Ikuinen Millenium':'https://tiivistamo.fi/',
- 'Divadlo Alfa: Transport – Tipping Point':'https://www.teatterisampo.fi/',
- 'Viapori Jazz: Mother of Jazz':'https://viaporijazz.fi/',
- 'Korjaamo Venetsialaiset':'https://www.korjaamo.fi/',
- 'Venetsialaiset by the sea':'https://www.rantapuisto.fi/',
- 'PK-Live':'https://www.henrysmusicbar.fi/',
- 'Cosplay Cafe & Workshop':'https://www.helmet.fi/',
- 'Tuntemattoman tarina':'https://www.teatterisampo.fi/',
- 'VuoRock':'https://www.vuotalo.fi/',
- 'Finland–Sweden Athletics':'https://ruotsiottelu.fi/',
- 'Cloud Gate Dance Theatre of Taiwan: 13 Tongues':'https://helsinkifestival.fi/en/event/cloud-gate-dance-theatre-of-taiwan-13-tongues-2/',
- 'Nuclear Summer':'https://aaniwalli.fi/',
- 'Löyly Venetsialaiset':'https://www.loylyhelsinki.fi/',
- 'OLEMA':'https://www.caisa.fi/',
- 'Snafu: Epidermis Circus':'https://whs.fi/',
- 'Katajanokan muusikot: Night by the Sea':'https://www.studium.fi/',
- 'Summer Terrace Live Band':'https://www.sokoshotels.fi/',
- 'Random Play Dance':'https://nuorten.hel.fi/',
- 'GTC Mafia Night':'https://www.gtccafe.fi/',
- '& Julia':'https://hkt.fi/',
- 'Mozart & Salieri / Zanetto':'https://www.aleksanterinteatteri.fi/',
- 'Czech Philharmonic · Bychkov · Yunchan Lim':'https://helsinkifestival.fi/en/event/czech-philharmonic-semyon-bychkov-yunchan-lim/',
- 'Haaveet album release + Lasten Hautausmaa Duo':'https://kuudeslinja.com/',
- 'A Scandalous September':'https://www.nonameteatteri.fi/',
- 'Before Sunset Experience':'https://www.gtccafe.fi/',
- 'Lauri Haav':'https://www.allasseapool.fi/',
- 'Viapori Jazz: Johanna Försti sings Dolly Parton':'https://viaporijazz.fi/',
- 'Alter Annala: Git Gud + Nenerchy':'https://www.tavastiaklubi.fi/',
- 'On The Rocks 25 Years: Monokate + Suzi Sabotage':'https://ontherocks.fi/',
- 'The Larry Sandman Trio Experience':'https://www.semifinal.fi/',
- 'Knutkit: Behind the Mask':'https://www.teatterisampo.fi/',
- 'Cotò Grand Closing Mayhem':'https://coto.fi/',
- 'Jersey Party Vol. 3':'https://barcelo.fi/',
- 'Uptown Saturday':'https://kuudeslinja.com/',
- 'Storyville Discolauantai: DJ Juza':'https://www.storyville.fi/',
- 'On The Rocks 25 Years: Mode For The Masses':'https://ontherocks.fi/',
- 'HAM: Abakanowicz · Ala-Maunus & Markkula · Tove Jansson':'https://www.hamhelsinki.fi/',
- 'Amos Rex: Generation 2026':'https://amosrex.fi/',
- 'Kiasma: Edith Karlson':'https://kiasma.fi/',
- 'Ateneum: Elga Sesemann · Eero Nelimarkka':'https://ateneum.fi/',
- 'Anton Alvarez: The Colour of Gravity':'https://helsinkicontemporary.com/',
- 'Love & Loss':'https://takemehomegallery.com/',
+    'Design Market':'https://helsinkidesignweek.com/events/design-market/',
+    'Jazzy Jam Sunday':'https://www.stadissa.fi/tapahtumat/111262/jazzy-jam-sunday',
+}
+
+# Linked Events carries no editorial weight -- everything it returns arrives as
+# rank 0, and the festival feed as rank 2 -- so the things worth planning a day
+# around are named here by a fragment of their title and given a rank. Matching
+# is on the folded title, so a fragment in either language will do.
+PROMOTE = {
+    # the two the day is really built around
+    'finland - sweden athletics': 3,
+    'ruotsi-ottelu':              3,
+    'cloud gate':                 3,
+    # strong, and each one anchors a part of the afternoon or evening
+    'poppaavali':                 2,
+    'kaivopuisto observatory':    2,
+    'kaivopuiston tahtitornin':   2,
+    'pretty woman':               2,
+    'egotrippi':                  2,
+    # worth it if you are passing
+    'hietsu flea market':         1,
+    'hietsun kirpputori':         1,
+    'epidermis circus':           1,
+    'espan lava':                 1,
+    'espa stage':                 1,
+    'sampo festival':             1,
+    'nukketeatteri sampo':        1,
 }

@@ -10,11 +10,15 @@ import datetime as dt, html, json, os, re, sys, time, urllib.parse, urllib.reque
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
-from curated import CURATED, DAY, NOTES_FI, NOTES_ZH, LINKS, PHOTOS
+from curated import CURATED, DAY, NOTES_FI, NOTES_ZH, LINKS, PHOTOS, PROMOTE
 
 TZ = dt.timezone(dt.timedelta(hours=3))            # Helsinki, August
-DAY0 = dt.datetime(2026, 8, 29, 0, 0, tzinfo=TZ)
-DAY1 = dt.datetime(2026, 8, 30, 4, 0, tzinfo=TZ)
+# Derived from the day curated.py is written for, rather than written out
+# again here: keeping the two in step by hand is how a whole day's sessions
+# once fell outside the window and left nothing but the standing exhibitions.
+_D = dt.date.fromisoformat(DAY)
+DAY0 = dt.datetime(_D.year, _D.month, _D.day, 0, 0, tzinfo=TZ)
+DAY1 = DAY0 + dt.timedelta(hours=28)               # through to 04:00 the morning after
 PLACE_CACHE = os.path.join(ROOT, 'raw', 'places.json')
 
 # Venues the city's registry does not carry. Looked up rather than guessed: a
@@ -30,6 +34,13 @@ MANUAL = {
     'malja':               (60.16069, 24.92928, 'Malja', 'Hietalahdenranta 6'),
     'ham':                 (60.170155, 24.930195, 'HAM Helsingin taidemuseo', 'Eteläinen Rautatiekatu 8'),
     'sompasauna':          (60.180751, 24.998883, 'Sompasauna', 'Kansanpuistonpolku 5'),
+    # Sunday venues the city's registry has no coordinates for
+    'kapylan lippakioski': (60.21683, 24.95441, 'Käpylän lippakioski', 'Pohjolanaukio'),
+    'tullisaaren kartanonpuisto': (60.17894, 25.03631, 'Tullisaaren kartanonpuisto', 'Tullisaari'),
+    'malmin jaahalli':     (60.24308, 25.02222, 'Malmin jäähalli', 'Talttakuja 6'),
+    'kulttuurikeskus sofia': (60.19151, 25.13648, 'Kulttuurikeskus Sofia', 'Kallvikinniementie 35'),
+    'seikkailupuisto huippu': (60.22789, 24.79640, 'Seikkailupuisto Huippu', 'Kaivoskallionpolku, Espoo'),
+    'kupla tapiola':       (60.17756, 24.80449, 'Kupla', 'Kulttuuriaukio 2, Espoo'),
 }
 
 # ---------------------------------------------------------------- helpers
@@ -397,6 +408,18 @@ def main():
         hit = PHOTOS.get(r['te'])
         if hit:
             r['img'], r['cr'], r['vp'] = hit[0], hit[1], 0
+    # Everything from the APIs arrives at a flat rank, so the handful that are
+    # worth building a day around are lifted by name here. Never lowers one.
+    lifted = 0
+    for r in out:
+        hay = fold(r.get('te', '') + ' ' + r.get('t', '') + ' ' + r.get('ve', ''))
+        for frag, rank in PROMOTE.items():
+            if frag in hay and rank > r['r']:
+                r['r'] = rank
+                lifted += 1
+                break
+    print(f'ranks: {lifted} lifted by name')
+
     # The row paints its picture at 66px; build_thumbs.py has written a 160px
     # copy of each one, and that is what the list loads.
     try:

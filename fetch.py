@@ -11,7 +11,7 @@ import json, os, sys, time, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(ROOT, 'raw')
-DAY = '2026-08-29'
+DAY = '2026-08-30'
 
 
 def get(url, tries=3):
