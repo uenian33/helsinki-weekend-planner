@@ -408,6 +408,29 @@ def main():
                 r['img'], r['vp'] = url, 1
                 vfilled += 1
                 break
+    # Pictures found by enrich_photos.py for the ones the APIs left bare: the
+    # organiser's own og:image where there is one, a photograph of the venue
+    # otherwise. A venue is not the event, so those keep the caption that says
+    # so, and carry the photographer and licence Commons asks for.
+    try:
+        found = json.load(open(os.path.join(ROOT, 'raw', 'found_photos.json')))
+    except Exception:
+        found = {'events': {}, 'venues': {}}
+    got_own = got_venue = 0
+    for r in out:
+        if r['img']:
+            continue
+        own = found.get('events', {}).get(r['i'])
+        if own:
+            r['img'], r['cr'], r['vp'] = own, '', 0
+            got_own += 1
+            continue
+        hit = found.get('venues', {}).get(r.get('ve'))
+        if hit:
+            r['img'], r['cr'], r['vp'] = hit['url'], hit.get('credit', ''), 1
+            got_venue += 1
+    print(f'found photos: {got_own} from the organiser, {got_venue} of the venue')
+
     # A photograph named for one specific event wins over the venue fallback,
     # and carries its credit with it.
     for r in out:

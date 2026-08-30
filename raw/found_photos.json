@@ -1,0 +1,118 @@
+{
+ "events": {
+  "cur2": "https://helsinkidesignweek.com/wp-content/uploads/2026/06/Kopio-tiedostosta-_DSF6781-1024x768.jpg",
+  "cur27": "https://www.stadissa.fi/images/stadissa/JazzyJam.jpg"
+ },
+ "venues": {
+  "Aino Acktén huvila": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Aino_Ackt%C3%A9n_huvila.jpg/1280px-Aino_Ackt%C3%A9n_huvila.jpg",
+   "credit": "Hyperboreios · Public domain",
+   "src": "commons"
+  },
+  "Aleksanterin teatteri": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Aleksanterin_teatteri_%2872866%29.jpg/1280px-Aleksanterin_teatteri_%2872866%29.jpg",
+   "credit": "Cope Baronet · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Cafe Engel": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Helsinki_Cathedral_on_18th_July_2016_Caf%C3%A9_Engel_1.jpg",
+   "credit": "Lauren Stevens · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Dallapénpuisto": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Aleksis_Kiven_Katu_1-3%2C_Dallap%C3%A9npuisto_-_G45508_%28hkm.HKMS000005-km0000on3e%29.jpg/1280px-Aleksis_Kiven_Katu_1-3%2C_Dallap%C3%A9npuisto_-_G45508_%28hkm.HKMS000005-km0000on3e%29.jpg",
+   "credit": "Nurmi Juho HKM · CC BY 4.0",
+   "src": "commons"
+  },
+  "Herttoniemen siirtolapuutarha": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Herttoniemen_siirtolapuutarha%2C_alueen_kaakkoisosa_1969_%283885%2B-177%3B%2BN49327%29.tif/lossy-page1-1280px-Herttoniemen_siirtolapuutarha%2C_alueen_kaakkoisosa_1969_%283885%2B-177%3B%2BN49327%29.tif.jpg",
+   "credit": "Kari Hakli · PDM-owner",
+   "src": "commons"
+  },
+  "Kaapelitehdas": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Kaapelitehdas%2C_Helsinki_2019-09-05.jpg",
+   "credit": "Zache · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Kaisaniemen kasvitieteellinen puutarha": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Kaisaniemen_kasvitieteellinen_puutarha_2017_%28202248%3B%2BG71223%29.jpg/1280px-Kaisaniemen_kasvitieteellinen_puutarha_2017_%28202248%3B%2BG71223%29.jpg",
+   "credit": "Anneli Vaniala · CC BY 4.0",
+   "src": "commons"
+  },
+  "Kallion tietokonemuseo": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Kallion_tietokonemuseo.jpg",
+   "credit": "Koskiniva · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Keskuspuisto": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Helsingin_keskuspuisto_in_Laakso_2022-09-19_02.jpg/1280px-Helsingin_keskuspuisto_in_Laakso_2022-09-19_02.jpg",
+   "credit": "Leonhard Lenz · CC0",
+   "src": "commons"
+  },
+  "Konepaja": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/20170904_09_VR_Konepaja_Helsinki.png/1280px-20170904_09_VR_Konepaja_Helsinki.png",
+   "credit": "Kahvilokki · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Kuudes Linja": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Yona_%40_Kuudes_Linja%2C_Helsinki.jpg/1280px-Yona_%40_Kuudes_Linja%2C_Helsinki.jpg",
+   "credit": "CC BY-SA 2.0",
+   "src": "commons"
+  },
+  "Malmin jäähalli": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Malmin_j%C3%A4%C3%A4halli.jpg/1280px-Malmin_j%C3%A4%C3%A4halli.jpg",
+   "credit": "Lentokonefani · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "On The Rocks": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/0/03/DIRT_at_On_The_Rocks%2C_Helsinki_in_December_2019.jpg",
+   "credit": "Janne Puronen · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Oodi": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Central_Library_Oodi_in_Helsinki_02.jpg/1280px-Central_Library_Oodi_in_Helsinki_02.jpg",
+   "credit": "Ninaras · CC BY 4.0",
+   "src": "commons"
+  },
+  "Siltanen": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Raila_Siltanen_1965_%28HK7155-2-340-65-1%29.tif/lossy-page1-1280px-Raila_Siltanen_1965_%28HK7155-2-340-65-1%29.tif.jpg",
+   "credit": "Kuvasiskot · CC BY 4.0",
+   "src": "commons"
+  },
+  "Storyville": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/d/dd/Helsinki_Storyville_01.jpg",
+   "credit": "aiko99ann · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Vallisaari": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Harbor_on_Vallisaari_Helsinki_2022-09-18_01.jpg/1280px-Harbor_on_Vallisaari_Helsinki_2022-09-18_01.jpg",
+   "credit": "Leonhard Lenz · CC0",
+   "src": "commons"
+  },
+  "Velodromi": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Helsingin_velodromi_-_20200223_145518.jpg/1280px-Helsingin_velodromi_-_20200223_145518.jpg",
+   "credit": "Sante Ilego · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Kino Tapiola": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Espoo_Cin%C3%A9_25AUG2024_Rantanen_Taanila_Salmenniemi_Kino_Tapiola.jpg/1280px-Espoo_Cin%C3%A9_25AUG2024_Rantanen_Taanila_Salmenniemi_Kino_Tapiola.jpg",
+   "credit": "Kimberli Mäkäräinen · CC BY-SA 4.0",
+   "src": "commons"
+  },
+  "Annantalo Arts Centre": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Annantalo_Helsinki_2022-09-17_01.jpg/1280px-Annantalo_Helsinki_2022-09-17_01.jpg",
+   "credit": "Leonhard Lenz · CC0",
+   "src": "commons (alias)"
+  },
+  "Seikkailupuisto Huippu": {
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Huipun_kiipeilyradat.jpg/1280px-Huipun_kiipeilyradat.jpg",
+   "credit": "Kiipeilija · CC BY-SA 4.0",
+   "src": "commons (alias)"
+  },
+  "Kulttuurikeskus Sofia": {
+   "url": "https://www.sofia.fi/wp-content/uploads/2022/08/sofia-share.jpg",
+   "credit": "",
+   "src": "organiser"
+  }
+ }
+}
