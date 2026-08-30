@@ -147,7 +147,7 @@ img{display:block;max-width:100%}
 .leaflet-bottom{margin-bottom:0}
 .leaflet-control-attribution{font-size:10px;background:var(--glass) !important;
   color:var(--on-surface-variant) !important;padding:1px 5px}
-.leaflet-control-attribution a{color:var(--primary) !important}
+.leaflet-control-attribution a{color:var(--on-surface-variant) !important}
 
 /* ---- top chrome: one 42px row, nothing stacked on top of it ---- */
 .topbar{position:absolute;z-index:500;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;
@@ -204,7 +204,7 @@ img{display:block;max-width:100%}
 .mk{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .mk[data-on="0"]{display:none}
 .mk .bub{border-radius:var(--corner-full);display:grid;place-items:center;
-  box-shadow:var(--elev-2);border:2px solid currentColor;
+  box-shadow:0 1px 2px rgba(28,29,33,.24),0 2px 8px rgba(28,29,33,.16);
   transition:transform var(--dur-med2) var(--spring)}
 .mk .bub svg{width:60%;height:60%}
 .mk-r3{color:var(--r3)}
@@ -214,7 +214,7 @@ img{display:block;max-width:100%}
 .mk-r1{color:var(--r1)}
 .mk-r1 .bub{width:22px;height:22px;background:var(--r1-bg)}
 .mk-r0{color:var(--r0)}
-.mk-r0 .bub{width:13px;height:13px;border-width:2px;background:var(--r0-bg)}
+.mk-r0 .bub{width:13px;height:13px;background:var(--r0-bg)}
 .mk-r0 .bub svg{display:none}
 /* A cluster wears the highest rank inside it, so a group holding something
    unmissable still reads as unmissable before you open it. These follow the
@@ -223,8 +223,8 @@ img{display:block;max-width:100%}
   font:800 13px/1 var(--mono);color:currentColor;letter-spacing:.2px}
 .mk-cl .bub svg{display:none}
 .mk-cl .lab{display:none}
-.mk-cl.has-plan{color:var(--primary)}
-.mk-cl.has-plan .bub{background:var(--primary-container)}
+.mk-cl.has-plan{color:var(--on-primary)}
+.mk-cl.has-plan .bub{background:var(--primary)}
 .mk .lab{margin-bottom:3px;order:-1;max-width:160px;padding:2px 7px;border-radius:var(--corner-s);
   background:var(--surface);box-shadow:var(--elev-1);border:1px solid currentColor;
   color:var(--on-surface);font:700 10px/14px var(--font);
@@ -233,8 +233,8 @@ img{display:block;max-width:100%}
 #map:not([data-close="1"]) .mk-r2 .lab{display:none}
 /* In the plan: the pin takes the plan's own colour and wears its stop number,
    so the route reads as 1 → 2 → 3 without opening anything. */
-.mk.in-plan{color:var(--primary)}
-.mk.in-plan .bub{background:var(--primary-container);
+.mk.in-plan{color:var(--on-primary)}
+.mk.in-plan .bub{background:var(--primary);
   box-shadow:var(--elev-2),0 0 0 3px var(--surface)}
 .mk.in-plan .bub svg{display:none}
 .mk.in-plan .bub::after{content:attr(data-n);font:800 12px/1 var(--mono)}
@@ -304,7 +304,7 @@ img{display:block;max-width:100%}
 .tl-head{display:flex;align-items:center;gap:10px;height:34px}
 .tl-clock{flex:0 0 auto;border:0;background:none;padding:0 2px;cursor:pointer;
   color:inherit;font:700 24px/26px var(--mono);letter-spacing:-1.2px}
-.tl-clock[data-off="1"]{color:var(--primary)}
+.tl-clock[data-off="1"]{color:var(--on-surface)}
 .tl-sub{flex:1 1 auto;min-width:0;color:var(--on-surface-variant);
   font:400 12px/16px var(--font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tl-sub b{color:var(--on-surface);font-weight:700}
@@ -317,7 +317,7 @@ img{display:block;max-width:100%}
 #tlsvg{display:block;width:100%;height:44px}
 .tl-ticks{display:flex;justify-content:space-between;height:14px;
   color:var(--on-surface-variant);font:500 10px/14px var(--mono)}
-#tlReset{color:var(--primary)}
+#tlReset{color:var(--on-surface)}
 .timeline[data-collapsed="1"] #tlReset{display:none}
 #tlToggle svg{transition:transform var(--dur-med2) var(--ease-emphasized)}
 #tlToggle[aria-expanded="false"] svg{transform:rotate(180deg)}
@@ -355,7 +355,7 @@ img{display:block;max-width:100%}
 .brand{display:flex;align-items:center;gap:10px;padding:0 2px 8px;
   color:var(--on-surface-variant);font:700 10px/14px var(--font);letter-spacing:1.15px;
   text-transform:uppercase}
-.brand .bm{display:inline-flex;align-items:center;gap:6px;color:var(--primary)}
+.brand .bm{display:inline-flex;align-items:center;gap:6px;color:var(--on-surface)}
 .brand .bm svg{width:17px;height:17px}
 .brand .bt{margin-left:auto;display:inline-flex;align-items:center;gap:7px;
   padding:2px 9px;border-radius:var(--corner-full);
@@ -461,9 +461,9 @@ img{display:block;max-width:100%}
 .group-h.time b{font:700 15px/20px var(--mono);letter-spacing:-.4px;text-transform:none;
   color:var(--on-surface)}
 .group-h.time span{color:var(--on-surface-variant)}
-.group-h.time.now b{color:var(--r3)}
-.group-h.time.now::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--r3)}
-.group-h i{width:9px;height:9px;border-radius:50%;background:var(--rk-ink)}
+.group-h.time.now b{color:var(--on-surface)}
+.group-h.time.now::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--r3-bg)}
+.group-h i{width:9px;height:9px;border-radius:50%;background:var(--rk-bg)}
 .group-h b{font:700 12px/16px var(--font);letter-spacing:1.1px;text-transform:uppercase}
 .group-h span{color:var(--on-surface-variant);font:400 12px/16px var(--font)}
 .empty{margin:28px 0;padding:30px 22px;text-align:center;border-radius:var(--corner-xl);
@@ -646,7 +646,7 @@ img{display:block;max-width:100%}
 .linkrow .u .p{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   color:var(--on-surface-variant)}
 .linkrow .u .q{flex:0 0 auto;color:var(--on-surface);font-weight:700}
-.linkrow .cp{flex:0 0 auto;color:var(--primary);font:700 12px/16px var(--font);
+.linkrow .cp{flex:0 0 auto;color:var(--on-surface);font:700 12px/16px var(--font);
   letter-spacing:.6px;text-transform:uppercase}
 .ffoot{display:flex;gap:10px;padding:10px 18px calc(18px + env(safe-area-inset-bottom));align-items:center}
 .btn-ghost{height:46px;padding:0 18px;border:0;border-radius:var(--corner-full);background:none;
