@@ -176,6 +176,12 @@ def from_linked_events(cache):
         pos = (loc.get('position') or {}).get('coordinates')
         if not pos:
             continue
+        # The city files online events under a place called Internet and gives
+        # it a real coordinate in the centre of town. They are videos, not
+        # somewhere to go, and a pin on a street corner says otherwise.
+        lnames = [fold(v) for v in (loc.get('name') or {}).values() if v]
+        if any(n in ('internet', 'verkossa', 'online') for n in lnames):
+            continue
         name, desc = e.get('name') or {}, e.get('description') or {}
         short = e.get('short_description') or {}
         offers = e.get('offers') or [{}]
