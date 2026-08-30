@@ -31,105 +31,97 @@
   --dur-med1:250ms;--dur-med2:300ms;--dur-med4:400ms;--dur-long1:450ms;--dur-long2:500ms;
   --font:"Roboto Flex","Roboto","Helvetica Neue",Arial,sans-serif;
   --mono:"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --elev-1:0 1px 2px rgba(123,30,36,.08),0 1px 3px 1px rgba(123,30,36,.06);
-  --elev-2:0 2px 6px 2px rgba(123,30,36,.10),0 1px 2px rgba(123,30,36,.11);
-  --elev-3:0 -4px 24px 4px rgba(123,30,36,.15),0 2px 4px rgba(123,30,36,.11);
+  --elev-1:0 1px 2px rgba(28,29,33,.07),0 1px 3px 1px rgba(28,29,33,.05);
+  --elev-2:0 2px 6px 2px rgba(28,29,33,.09),0 1px 2px rgba(28,29,33,.10);
+  --elev-3:0 -4px 24px 4px rgba(28,29,33,.14),0 2px 4px rgba(28,29,33,.10);
   --tl-h:118px;
 
-  /* Five given colours and nothing else: #7B1E24, #C8404E, #DD6E8B, #E5A0BE,
-     #D5E9EF, on white paper.
+  /* Black, white and grey carry the interface. The five given colours --
+     #7B1E24, #C8404E, #DD6E8B, #E5A0BE, #D5E9EF -- are accents, and they are
+     spent in four places only: the primary action, the rank a session was
+     given, the badge that says something is on right now, and a warning.
+     Everything else, including the hundred and fifty ordinary sessions at rank
+     zero, is neutral.
 
-     They are a ramp from dark red to pale blue, not a set of unrelated hues, so
-     they are used for the one thing in this app that is ordered -- rank -- and
-     not for category, which is nominal. Seven categories cannot be told apart
-     in five stops of one ramp at a legible contrast, so category is carried by
-     its name and its glyph and every category chip is the same.
-
-     Small text needs 4.5:1, and the ramp allows exactly four inks that reach it:
-     #7B1E24 on white (10.23), on #D5E9EF (8.15) and on #E5A0BE (4.92), and
-     #FFFFFF on #C8404E (4.88). Every pair below is one of those. #DD6E8B reaches
-     3.25 at best against anything, so no text is ever set on it -- it takes the
-     roles with none: the selected pin's pulse, the timeline track, the handle.
-     Blush pop is the most saturated of the five and light cyan is the furthest
-     from it in hue, so those two carry the top two ranks and stay apart at a
-     glance; thistle takes the third and ghost white the rest. Each pastel is a
-     ground or a fill only — none can carry text — and is paired with an ink
-     deepened from its own hue. Two category fills are derived from the family
-     where five colours could not cover seven. */
+     Small text needs 4.5:1 and every pair here clears it: #1C1D21 on white
+     16.84, #65686F on white 5.58, #1C1D21 on #E4E5E8 13.37, #7B1E24 on #E5A0BE
+     4.92, white on #7B1E24 10.23, white on #C8404E 4.88. #DD6E8B reaches 3.25
+     against anything, so no text is ever set on it: it is the pulse under a
+     selected pin and nothing else. */
   --primary:#7B1E24;--on-primary:#FFFFFF;
-  --primary-container:#E5A0BE;--on-primary-container:#7B1E24;
-  --surface:#FFFFFF;--on-surface:#7B1E24;
-  --surface-container-low:rgba(213,233,239,.30);--surface-container:rgba(213,233,239,.50);
-  --surface-container-high:rgba(213,233,239,.72);--surface-container-highest:#D5E9EF;
-  --on-surface-variant:#C8404E;
-  --outline:#C8404E;--outline-variant:#D5E9EF;
-  --inverse-surface:#7B1E24;--inverse-on-surface:#D5E9EF;--inverse-primary:#E5A0BE;
-  --scrim:#7B1E24;
+  --primary-container:#D5E9EF;--on-primary-container:#1C1D21;
+  --surface:#FFFFFF;--on-surface:#1C1D21;
+  --surface-container-low:#FAFAFB;--surface-container:#F3F4F6;
+  --surface-container-high:#ECEDEF;--surface-container-highest:#E4E5E8;
+  --on-surface-variant:#65686F;
+  --outline:#8E9099;--outline-variant:#E4E5E8;
+  --inverse-surface:#1C1D21;--inverse-on-surface:#F3F4F6;--inverse-primary:#E5A0BE;
+  --scrim:#1C1D21;
   --glass:rgba(255,255,255,.92);
   --accent-soft:#DD6E8B;
-  --c-visual-bg:#D5E9EF;--c-visual-ink:#7B1E24;
-  --c-music-bg:#D5E9EF;--c-music-ink:#7B1E24;
-  --c-dance-bg:#D5E9EF;--c-dance-ink:#7B1E24;
-  --c-part-bg:#D5E9EF;--c-part-ink:#7B1E24;
-  --c-lit-bg:#D5E9EF;--c-lit-ink:#7B1E24;
-  --c-theatre-bg:#D5E9EF;--c-theatre-ink:#7B1E24;
-  --c-film-bg:#D5E9EF;--c-film-ink:#7B1E24;
+  --c-visual-bg:#ECEDEF;--c-visual-ink:#4A4C53;
+  --c-music-bg:#ECEDEF;--c-music-ink:#4A4C53;
+  --c-dance-bg:#ECEDEF;--c-dance-ink:#4A4C53;
+  --c-part-bg:#ECEDEF;--c-part-ink:#4A4C53;
+  --c-lit-bg:#ECEDEF;--c-lit-ink:#4A4C53;
+  --c-theatre-bg:#ECEDEF;--c-theatre-ink:#4A4C53;
+  --c-film-bg:#ECEDEF;--c-film-ink:#4A4C53;
   --r3:#FFFFFF;--r3-bg:#7B1E24;
   --r2:#FFFFFF;--r2-bg:#C8404E;
   --r1:#7B1E24;--r1-bg:#E5A0BE;
-  --r0:#7B1E24;--r0-bg:#D5E9EF;
+  --r0:#4A4C53;--r0-bg:#E4E5E8;
   --warn-bg:#C8404E;--warn-ink:#FFFFFF;
-  --tiles:none;--map-tint:rgba(123,30,36,0);
+  --tiles:none;--map-tint:rgba(28,29,33,0);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --primary:#E5A0BE;--on-primary:#7B1E24;
-  --primary-container:#C8404E;--on-primary-container:#FFFFFF;
-  --surface:#7B1E24;--on-surface:#D5E9EF;
-  --surface-container-low:rgba(213,233,239,.06);--surface-container:rgba(213,233,239,.10);
-  --surface-container-high:rgba(213,233,239,.16);--surface-container-highest:rgba(213,233,239,.22);
-  --on-surface-variant:#E5A0BE;
-  --outline:#E5A0BE;--outline-variant:rgba(213,233,239,.22);
-  --inverse-surface:#D5E9EF;--inverse-on-surface:#7B1E24;--inverse-primary:#7B1E24;
-  --scrim:#7B1E24;--glass:rgba(123,30,36,.88);
+  --primary:#E5A0BE;--on-primary:#1C1D21;
+  --primary-container:#2A2C31;--on-primary-container:#E7E8EC;
+  --surface:#16171A;--on-surface:#E7E8EC;
+  --surface-container-low:#1B1C20;--surface-container:#212327;
+  --surface-container-high:#282A2F;--surface-container-highest:#2F3138;
+  --on-surface-variant:#A2A5AD;
+  --outline:#8E9099;--outline-variant:#31333A;
+  --inverse-surface:#E7E8EC;--inverse-on-surface:#212327;--inverse-primary:#7B1E24;
+  --scrim:#000000;--glass:rgba(22,23,26,.88);
   --accent-soft:#DD6E8B;
-  --c-visual-bg:rgba(213,233,239,.14);--c-visual-ink:#D5E9EF;
-  --c-music-bg:rgba(213,233,239,.14);--c-music-ink:#D5E9EF;
-  --c-dance-bg:rgba(213,233,239,.14);--c-dance-ink:#D5E9EF;
-  --c-part-bg:rgba(213,233,239,.14);--c-part-ink:#D5E9EF;
-  --c-lit-bg:rgba(213,233,239,.14);--c-lit-ink:#D5E9EF;
-  --c-theatre-bg:rgba(213,233,239,.14);--c-theatre-ink:#D5E9EF;
-  --c-film-bg:rgba(213,233,239,.14);--c-film-ink:#D5E9EF;
+  --c-visual-bg:#282A2F;--c-visual-ink:#C6C9D0;
+  --c-music-bg:#282A2F;--c-music-ink:#C6C9D0;
+  --c-dance-bg:#282A2F;--c-dance-ink:#C6C9D0;
+  --c-part-bg:#282A2F;--c-part-ink:#C6C9D0;
+  --c-lit-bg:#282A2F;--c-lit-ink:#C6C9D0;
+  --c-theatre-bg:#282A2F;--c-theatre-ink:#C6C9D0;
+  --c-film-bg:#282A2F;--c-film-ink:#C6C9D0;
   --r3:#7B1E24;--r3-bg:#E5A0BE;
   --r2:#FFFFFF;--r2-bg:#C8404E;
-  --r1:#7B1E24;--r1-bg:#D5E9EF;
-  --r0:#D5E9EF;--r0-bg:rgba(213,233,239,.16);
+  --r1:#1C1D21;--r1-bg:#D5E9EF;
+  --r0:#C6C9D0;--r0-bg:#2F3138;
   --warn-bg:#C8404E;--warn-ink:#FFFFFF;
-  --tiles:none;--map-tint:rgba(123,30,36,.18);
+  --tiles:none;--map-tint:rgba(22,23,26,.18);
 }}
 :root[data-theme="dark"]{
-  --primary:#E5A0BE;--on-primary:#7B1E24;
-  --primary-container:#C8404E;--on-primary-container:#FFFFFF;
-  --surface:#7B1E24;--on-surface:#D5E9EF;
-  --surface-container-low:rgba(213,233,239,.06);--surface-container:rgba(213,233,239,.10);
-  --surface-container-high:rgba(213,233,239,.16);--surface-container-highest:rgba(213,233,239,.22);
-  --on-surface-variant:#E5A0BE;
-  --outline:#E5A0BE;--outline-variant:rgba(213,233,239,.22);
-  --inverse-surface:#D5E9EF;--inverse-on-surface:#7B1E24;--inverse-primary:#7B1E24;
-  --scrim:#7B1E24;--glass:rgba(123,30,36,.88);
+  --primary:#E5A0BE;--on-primary:#1C1D21;
+  --primary-container:#2A2C31;--on-primary-container:#E7E8EC;
+  --surface:#16171A;--on-surface:#E7E8EC;
+  --surface-container-low:#1B1C20;--surface-container:#212327;
+  --surface-container-high:#282A2F;--surface-container-highest:#2F3138;
+  --on-surface-variant:#A2A5AD;
+  --outline:#8E9099;--outline-variant:#31333A;
+  --inverse-surface:#E7E8EC;--inverse-on-surface:#212327;--inverse-primary:#7B1E24;
+  --scrim:#000000;--glass:rgba(22,23,26,.88);
   --accent-soft:#DD6E8B;
-  --c-visual-bg:rgba(213,233,239,.14);--c-visual-ink:#D5E9EF;
-  --c-music-bg:rgba(213,233,239,.14);--c-music-ink:#D5E9EF;
-  --c-dance-bg:rgba(213,233,239,.14);--c-dance-ink:#D5E9EF;
-  --c-part-bg:rgba(213,233,239,.14);--c-part-ink:#D5E9EF;
-  --c-lit-bg:rgba(213,233,239,.14);--c-lit-ink:#D5E9EF;
-  --c-theatre-bg:rgba(213,233,239,.14);--c-theatre-ink:#D5E9EF;
-  --c-film-bg:rgba(213,233,239,.14);--c-film-ink:#D5E9EF;
+  --c-visual-bg:#282A2F;--c-visual-ink:#C6C9D0;
+  --c-music-bg:#282A2F;--c-music-ink:#C6C9D0;
+  --c-dance-bg:#282A2F;--c-dance-ink:#C6C9D0;
+  --c-part-bg:#282A2F;--c-part-ink:#C6C9D0;
+  --c-lit-bg:#282A2F;--c-lit-ink:#C6C9D0;
+  --c-theatre-bg:#282A2F;--c-theatre-ink:#C6C9D0;
+  --c-film-bg:#282A2F;--c-film-ink:#C6C9D0;
   --r3:#7B1E24;--r3-bg:#E5A0BE;
   --r2:#FFFFFF;--r2-bg:#C8404E;
-  --r1:#7B1E24;--r1-bg:#D5E9EF;
-  --r0:#D5E9EF;--r0-bg:rgba(213,233,239,.16);
+  --r1:#1C1D21;--r1-bg:#D5E9EF;
+  --r0:#C6C9D0;--r0-bg:#2F3138;
   --warn-bg:#C8404E;--warn-ink:#FFFFFF;
-  --tiles:none;--map-tint:rgba(123,30,36,.18);
+  --tiles:none;--map-tint:rgba(22,23,26,.18);
 }
 
 *{box-sizing:border-box}
@@ -198,7 +190,7 @@ img{display:block;max-width:100%}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* the blue dot everyone already knows */
 .mypos{border-radius:50%;background:var(--primary);
-  box-shadow:0 0 0 3px var(--surface),0 1px 6px rgba(123,30,36,.38)}
+  box-shadow:0 0 0 3px var(--surface),0 1px 6px rgba(28,29,33,.35)}
 .seg{position:relative;display:flex;padding:3px;border-radius:var(--corner-full);
   background:var(--glass);backdrop-filter:blur(12px);box-shadow:var(--elev-1)}
 .seg button{border:0;background:none;cursor:pointer;height:30px;padding:0 12px;
@@ -439,7 +431,7 @@ img{display:block;max-width:100%}
 .row .fav:active{transform:scale(.85)}
 .row .fav svg{width:18px;height:18px}
 .row .fav .f{display:none}
-.row .fav[aria-pressed="true"]{background:var(--cat-ink);color:var(--surface)}
+.row .fav[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
 .row .fav[aria-pressed="true"] .f{display:block}
 .row .fav[aria-pressed="true"] .o{display:none}
 .badges{display:flex;flex-wrap:nowrap;gap:4px;margin-top:5px;height:18px;overflow:hidden;
